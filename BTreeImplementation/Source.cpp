@@ -4,7 +4,9 @@
 
 using namespace std;
 
-// Code (idea) source taken from here: http://www.geeksforgeeks.org/b-tree-set-1-introduction-2/
+/*
+	Code (idea) source taken from here: http://www.geeksforgeeks.org/b-tree-set-1-introduction-2/
+*/
 
 int main()
 {
