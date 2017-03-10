@@ -2,7 +2,7 @@
 // Template class separation workarounds described here: https://www.codeproject.com/Articles/48575/How-to-define-a-template-class-in-a-h-file-and-imp
 
 #include <iostream>
-#include <functional>
+#include <string>
 
 #include "BTree.h"
 #include "BTreeNode.h"
@@ -10,68 +10,41 @@
 #include "BTree.cpp" // Necessary for template class separation
 #include "BTreeNode.cpp" // Necessary for template class separation
 
+#include "Dummy.h" // For comparison test!
+
 using namespace std;
 
 int main()
 {
-	BTree<int, std::greater<int>> t(3); // A B-Tree with minium degree 3
+	BTree<Dummy, DummyComparator> t(3); // A B-Tree with minium degree 3
 
-	t.insert(1);
-	t.insert(3);
-	t.insert(7);
-	t.insert(10);
-	t.insert(11);
-	t.insert(13);
-	t.insert(14);
-	t.insert(15);
-	t.insert(18);
-	t.insert(16);
-	t.insert(19);
-	t.insert(24);
-	t.insert(25);
-	t.insert(26);
-	t.insert(21);
-	t.insert(4);
-	t.insert(5);
-	t.insert(20);
-	t.insert(22);
-	t.insert(2);
-	t.insert(17);
-	t.insert(12);
-	t.insert(6);
+	Dummy** dummies = new Dummy*[22]{ new Dummy("D1", 1), new Dummy("D3", 3), new Dummy("D7", 7), new Dummy("D10", 10), new Dummy("D11", 11),
+		new Dummy("D13", 13), new Dummy("D14", 14), new Dummy("D15", 15), new Dummy("D16", 16),	new Dummy("D19", 19), new Dummy("D24", 24),
+		new Dummy("D25", 25), new Dummy("D26", 26),	new Dummy("D21", 21), new Dummy("D4", 4), new Dummy("D5", 5), new Dummy("D20", 20),
+		new Dummy("D22", 22), new Dummy("D2", 2), new Dummy("D17", 17),	new Dummy("D12", 12), new Dummy("D6", 6) };
+
+	for (unsigned int i = 0; i < 22; i++)
+	{
+		t.insert(dummies[i]);
+	}
 
 	cout << "Traversal of tree constructed is\n";
-	t.traverse();
+	t.traverse(Dummy::printablValueFunc);
 	cout << endl;
 
-	t.remove(6);
-	cout << "Traversal of tree after removing 6\n";
-	t.traverse();
+	t.remove(dummies[2]);
+	cout << "Traversal of tree after removing D7 element\n";
+	t.traverse(Dummy::printablValueFunc);
 	cout << endl;
 
-	t.remove(13);
-	cout << "Traversal of tree after removing 13\n";
-	t.traverse();
+	t.remove(dummies[5]);
+	cout << "Traversal of tree after removing D13 element\n";
+	t.traverse(Dummy::printablValueFunc);
 	cout << endl;
 
-	t.remove(7);
-	cout << "Traversal of tree after removing 7\n";
-	t.traverse();
-	cout << endl;
-
-	t.remove(4);
-	cout << "Traversal of tree after removing 4\n";
-	t.traverse();
-	cout << endl;
-
-	t.remove(2);
-	cout << "Traversal of tree after removing 2\n";
-	t.traverse();
-	cout << endl;
-
-	t.remove(16);
-	cout << "Traversal of tree after removing 16\n";
-	t.traverse();
+	t.remove(dummies[0]);
+	cout << "Traversal of tree after removing D1 element\n";
+	t.traverse(Dummy::printablValueFunc);
 	cout << endl;
 
 	return 0;

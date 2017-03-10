@@ -4,6 +4,7 @@
 #pragma once
 
 #include <set>
+#include <string>
 
 #include "BTreeNode.h"
 
@@ -23,22 +24,22 @@ public:
 	}
 
 	// function to traverse the tree
-	void traverse()
+	void traverse(std::string(*printableValue)(T*))
 	{
-		if (root != NULL) root->traverse();
+		if (root != NULL) root->traverse(printableValue);
 	}
 
 	// function to search a key in this tree
-	BTreeNode<T, Compare>* search(T k)
+	BTreeNode<T, Compare>* search(T* k)
 	{
 		return (root == NULL) ? NULL : root->search(k);
 	}
 
 	// The main function that inserts a new key in this B-Tree
-	void insert(T k);
+	void insert(T* k);
 
 	// The main function that removes a new key in thie B-Tree
-	void remove(T k);
+	void remove(T* k);
 };
 
 #endif

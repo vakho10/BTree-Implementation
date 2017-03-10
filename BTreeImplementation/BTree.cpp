@@ -1,7 +1,7 @@
 #include "BTree.h"
 
 template<typename T, typename Compare>
-void BTree<T, Compare>::insert(T k)
+void BTree<T, Compare>::insert(T* k)
 {
 	// If tree is empty
 	if (root == NULL)
@@ -41,7 +41,7 @@ void BTree<T, Compare>::insert(T k)
 }
 
 template<typename T, typename Compare>
-void BTree<T, Compare>::remove(T k)
+void BTree<T, Compare>::remove(T* k)
 {
 	if (!root)
 	{
