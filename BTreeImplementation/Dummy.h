@@ -14,7 +14,7 @@ public:
 
 	// Helper function which returns Dummy objects 
 	// printable value (which will be used by traverse functions)
-	static std::string printablValueFunc(Dummy* d)
+	static std::string printableValueFunc(Dummy* d)
 	{
 		return d->name;
 	}

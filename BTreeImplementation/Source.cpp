@@ -29,22 +29,22 @@ int main()
 	}
 
 	cout << "Traversal of tree constructed is\n";
-	t.traverse(Dummy::printablValueFunc);
+	t.traverse(Dummy::printableValueFunc);
 	cout << endl;
 
 	t.remove(dummies[2]);
 	cout << "Traversal of tree after removing D7 element\n";
-	t.traverse(Dummy::printablValueFunc);
+	t.traverse(Dummy::printableValueFunc);
 	cout << endl;
 
 	t.remove(dummies[5]);
 	cout << "Traversal of tree after removing D13 element\n";
-	t.traverse(Dummy::printablValueFunc);
+	t.traverse(Dummy::printableValueFunc);
 	cout << endl;
 
 	t.remove(dummies[0]);
 	cout << "Traversal of tree after removing D1 element\n";
-	t.traverse(Dummy::printablValueFunc);
+	t.traverse(Dummy::printableValueFunc);
 	cout << endl;
 
 	return 0;
