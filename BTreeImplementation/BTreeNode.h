@@ -3,22 +3,23 @@
 
 #pragma once
 
-template <class T>
+template <typename T, typename Compare>
 class BTreeNode
 {
 	T *keys;  // An array of keys
 	int t;      // Minimum degree (defines the range for number of keys)
-	BTreeNode<T> **C; // An array of child pointers
+	BTreeNode<T, Compare> **C; // An array of child pointers
 	int n;     // Current number of keys
 	bool leaf; // Is true when node is leaf. Otherwise false
+	Compare cmp;
 public:
-	BTreeNode(int _t, bool _leaf);   // Constructor
+	BTreeNode(int _t, bool _leaf, Compare& _cmp = Compare());   // Constructor
 
 	// A function to traverse all nodes in a subtree rooted with this node
 	void traverse();
 
 	// A function to search a key in subtree rooted with this node.
-	BTreeNode<T> *search(T k);   // returns NULL if k is not present.
+	BTreeNode<T, Compare> *search(T k);   // returns NULL if k is not present.
 
 	// A function that returns the index of the first key that is greater
 	// or equal to k
@@ -32,7 +33,7 @@ public:
 	// A utility function to split the child y of this node. i is index
 	// of y in child array C[].  The Child y must be full when this
 	// function is called
-	void splitChild(int i, BTreeNode<T> *y);
+	void splitChild(int i, BTreeNode<T, Compare> *y);
 
 	// A wrapper function to remove the key k in subtree rooted with
 	// this node.
@@ -72,7 +73,7 @@ public:
 
 	// Make BTree friend of this so that we can access private members of this
 	// class in BTree functions
-	template<class T> friend class BTree;
+	template<typename T, typename Compare> friend class BTree;
 };
 
 #endif

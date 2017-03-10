@@ -3,18 +3,23 @@
 
 #pragma once
 
+#include <set>
+
 #include "BTreeNode.h"
 
-template<class T>
+template<typename T, typename Compare = std::less<T>>
 class BTree
 {
-	BTreeNode<T> *root; // Pointer to root node
+	BTreeNode<T, Compare> *root; // Pointer to root node
 	int t;  // Minimum degree
+	Compare cmp; // Custom comparator
 public:
 	// Constructor (Initializes tree as empty)
-	BTree(int _t)
+	BTree(int _t, Compare& _cmp = Compare())
 	{
-		root = NULL;  t = _t;
+		root = NULL;  
+		t = _t;
+		cmp = _cmp;
 	}
 
 	// function to traverse the tree
@@ -24,7 +29,7 @@ public:
 	}
 
 	// function to search a key in this tree
-	BTreeNode<T>* search(T k)
+	BTreeNode<T, Compare>* search(T k)
 	{
 		return (root == NULL) ? NULL : root->search(k);
 	}

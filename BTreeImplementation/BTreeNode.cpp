@@ -1,11 +1,11 @@
 #include "BTreeNode.h"
 
-template<class T>
-BTreeNode<T>::BTreeNode(int t1, bool leaf1)
+template<typename T, typename Compare>
+BTreeNode<T, Compare>::BTreeNode(int _t, bool _leaf, Compare & _cmp)
 {
 	// Copy the given minimum degree and leaf property
-	t = t1;
-	leaf = leaf1;
+	t = _t;
+	leaf = _leaf;
 
 	// Allocate memory for maximum number of possible keys
 	// and child pointers
@@ -14,29 +14,31 @@ BTreeNode<T>::BTreeNode(int t1, bool leaf1)
 
 	// Initialize the number of keys as 0
 	n = 0;
+
+	cmp = _cmp;
 }
 
 // A utility function that returns the index of the first key that is
 // greater than or equal to k
-template<class T>
-int BTreeNode<T>::findKey(T k)
+template<typename T, typename Compare>
+int BTreeNode<T, Compare>::findKey(T k)
 {
 	int idx = 0;
-	while (idx < n && keys[idx] < k)
+	while (idx < n && cmp(keys[idx], k)) // keys[idx] < k
 		++idx;
 	return idx;
 }
 
 // A function to remove the key k from the sub-tree rooted with this node
-template<class T>
-void BTreeNode<T>::remove(T k)
+template<typename T, typename Compare>
+void BTreeNode<T, Compare>::remove(T k)
 {
 	int idx = findKey(k);
 
 	// The key to be removed is present in this node
-	if (idx < n && keys[idx] == k)
+	if (idx < n 
+		&& !cmp(keys[idx], k) && !cmp(k, keys[idx])) // keys[idx] == k - Same comparison goes here (equals when not more and nor less)!
 	{
-
 		// If the node is a leaf node - removeFromLeaf is called
 		// Otherwise, removeFromNonLeaf function is called
 		if (leaf)
@@ -75,8 +77,8 @@ void BTreeNode<T>::remove(T k)
 }
 
 // A function to remove the idx-th key from this node - which is a leaf node
-template<class T>
-void BTreeNode<T>::removeFromLeaf(int idx)
+template<typename T, typename Compare>
+void BTreeNode<T, Compare>::removeFromLeaf(int idx)
 {
 
 	// Move all the keys after the idx-th pos one place backward
@@ -90,8 +92,8 @@ void BTreeNode<T>::removeFromLeaf(int idx)
 }
 
 // A function to remove the idx-th key from this node - which is a non-leaf node
-template<class T>
-void BTreeNode<T>::removeFromNonLeaf(int idx)
+template<typename T, typename Compare>
+void BTreeNode<T, Compare>::removeFromNonLeaf(int idx)
 {
 	int k = keys[idx];
 
@@ -131,8 +133,8 @@ void BTreeNode<T>::removeFromNonLeaf(int idx)
 }
 
 // A function to get predecessor of keys[idx]
-template<class T>
-int BTreeNode<T>::getPred(int idx)
+template<typename T, typename Compare>
+int BTreeNode<T, Compare>::getPred(int idx)
 {
 	// Keep moving to the right most node until we reach a leaf
 	BTreeNode *cur = C[idx];
@@ -143,8 +145,8 @@ int BTreeNode<T>::getPred(int idx)
 	return cur->keys[cur->n - 1];
 }
 
-template<class T>
-int BTreeNode<T>::getSucc(int idx)
+template<typename T, typename Compare>
+int BTreeNode<T, Compare>::getSucc(int idx)
 {
 
 	// Keep moving the left most node starting from C[idx+1] until we reach a leaf
@@ -157,8 +159,8 @@ int BTreeNode<T>::getSucc(int idx)
 }
 
 // A function to fill child C[idx] which has less than t-1 keys
-template<class T>
-void BTreeNode<T>::fill(int idx)
+template<typename T, typename Compare>
+void BTreeNode<T, Compare>::fill(int idx)
 {
 
 	// If the previous child(C[idx-1]) has more than t-1 keys, borrow a key
@@ -186,8 +188,8 @@ void BTreeNode<T>::fill(int idx)
 
 // A function to borrow a key from C[idx-1] and insert it
 // into C[idx]
-template<class T>
-void BTreeNode<T>::borrowFromPrev(int idx)
+template<typename T, typename Compare>
+void BTreeNode<T, Compare>::borrowFromPrev(int idx)
 {
 	BTreeNode *child = C[idx];
 	BTreeNode *sibling = C[idx - 1];
@@ -226,11 +228,11 @@ void BTreeNode<T>::borrowFromPrev(int idx)
 
 // A function to borrow a key from the C[idx+1] and place
 // it in C[idx]
-template<class T>
-void BTreeNode<T>::borrowFromNext(int idx)
+template<typename T, typename Compare>
+void BTreeNode<T, Compare>::borrowFromNext(int idx)
 {
-	BTreeNode<T> *child = C[idx];
-	BTreeNode<T> *sibling = C[idx + 1];
+	BTreeNode<T, Compare> *child = C[idx];
+	BTreeNode<T, Compare> *sibling = C[idx + 1];
 
 	// keys[idx] is inserted as the last key in C[idx]
 	child->keys[(child->n)] = keys[idx];
@@ -264,11 +266,11 @@ void BTreeNode<T>::borrowFromNext(int idx)
 
 // A function to merge C[idx] with C[idx+1]
 // C[idx+1] is freed after merging
-template<class T>
-void BTreeNode<T>::merge(int idx)
+template<typename T, typename Compare>
+void BTreeNode<T, Compare>::merge(int idx)
 {
-	BTreeNode<T> *child = C[idx];
-	BTreeNode<T> *sibling = C[idx + 1];
+	BTreeNode<T, Compare> *child = C[idx];
+	BTreeNode<T, Compare> *sibling = C[idx + 1];
 
 	// Pulling a key from the current node and inserting it into (t-1)th
 	// position of C[idx]
@@ -307,8 +309,8 @@ void BTreeNode<T>::merge(int idx)
 // A utility function to insert a new key in this node
 // The assumption is, the node must be non-full when this
 // function is called
-template<class T>
-void BTreeNode<T>::insertNonFull(T k)
+template<typename T, typename Compare>
+void BTreeNode<T, Compare>::insertNonFull(T k)
 {
 	// Initialize index as index of rightmost element
 	int i = n - 1;
@@ -319,7 +321,7 @@ void BTreeNode<T>::insertNonFull(T k)
 		// The following loop does two things
 		// a) Finds the location of new key to be inserted
 		// b) Moves all greater keys to one place ahead
-		while (i >= 0 && keys[i] > k)
+		while (i >= 0 && cmp(k, keys[i])) // keys[i] > k
 		{
 			keys[i + 1] = keys[i];
 			i--;
@@ -332,7 +334,7 @@ void BTreeNode<T>::insertNonFull(T k)
 	else // If this node is not leaf
 	{
 		// Find the child which is going to have the new key
-		while (i >= 0 && keys[i] > k)
+		while (i >= 0 && cmp(k, keys[i])) // keys[i] > k
 			i--;
 
 		// See if the found child is full
@@ -344,7 +346,7 @@ void BTreeNode<T>::insertNonFull(T k)
 			// After split, the middle key of C[i] goes up and
 			// C[i] is splitted into two.  See which of the two
 			// is going to have the new key
-			if (keys[i + 1] < k)
+			if (cmp(keys[i + 1], k)) // keys[i + 1] < k
 				i++;
 		}
 		C[i + 1]->insertNonFull(k);
@@ -353,12 +355,12 @@ void BTreeNode<T>::insertNonFull(T k)
 
 // A utility function to split the child y of this node
 // Note that y must be full when this function is called
-template<class T>
-void BTreeNode<T>::splitChild(int i, BTreeNode<T> *y)
+template<typename T, typename Compare>
+void BTreeNode<T, Compare>::splitChild(int i, BTreeNode<T, Compare> *y)
 {
 	// Create a new node which is going to store (t-1) keys
 	// of y
-	BTreeNode<T> *z = new BTreeNode<T>(y->t, y->leaf);
+	BTreeNode<T, Compare> *z = new BTreeNode<T, Compare>(y->t, y->leaf);
 	z->n = t - 1;
 
 	// Copy the last (t-1) keys of y to z
@@ -396,8 +398,8 @@ void BTreeNode<T>::splitChild(int i, BTreeNode<T> *y)
 }
 
 // Function to traverse all nodes in a subtree rooted with this node
-template<class T>
-void BTreeNode<T>::traverse()
+template<typename T, typename Compare>
+void BTreeNode<T, Compare>::traverse()
 {
 	// There are n keys and n+1 children, travers through n keys
 	// and first n children
@@ -417,16 +419,16 @@ void BTreeNode<T>::traverse()
 }
 
 // Function to search key k in subtree rooted with this node
-template<class T>
-BTreeNode<T> *BTreeNode<T>::search(T k)
+template<typename T, typename Compare>
+BTreeNode<T, Compare> *BTreeNode<T, Compare>::search(T k)
 {
 	// Find the first key greater than or equal to k
 	int i = 0;
-	while (i < n && k > keys[i])
+	while (i < n && cmp(keys[i], k)) // k > keys[i]
 		i++;
 
 	// If the found key is equal to k, return this node
-	if (keys[i] == k)
+	if (!cmp(keys[i], k) && !cmp(k, keys[i])) // keys[i] == k - Equals simply means that it is not less and nor more!
 		return this;
 
 	// If key is not found here and this is a leaf node

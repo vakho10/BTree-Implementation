@@ -2,6 +2,7 @@
 // Template class separation workarounds described here: https://www.codeproject.com/Articles/48575/How-to-define-a-template-class-in-a-h-file-and-imp
 
 #include <iostream>
+#include <functional>
 
 #include "BTree.h"
 #include "BTreeNode.h"
@@ -11,9 +12,9 @@
 
 using namespace std;
 
-int main() 
+int main()
 {
-	BTree<int> t(3); // A B-Tree with minium degree 3
+	BTree<int, std::greater<int>> t(3); // A B-Tree with minium degree 3
 
 	t.insert(1);
 	t.insert(3);
