@@ -148,12 +148,15 @@
   <ItemGroup>
     <ClCompile Include="BTree.cpp" />
     <ClCompile Include="BTreeNode.cpp" />
+    <ClCompile Include="RedBlackTree.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BTree.h" />
     <ClInclude Include="BTreeNode.h" />
     <ClInclude Include="Dummy.h" />
+    <ClInclude Include="RedBlackTree.h" />
+    <ClInclude Include="RedBlackTreeNode.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

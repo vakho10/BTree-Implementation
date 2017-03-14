@@ -5,12 +5,16 @@
 #include <string>
 
 #include "BTree.h"
-#include "BTreeNode.h"
-
 #include "BTree.cpp" // Necessary for template class separation
+
+#include "BTreeNode.h"
 #include "BTreeNode.cpp" // Necessary for template class separation
 
 #include "Dummy.h" // For comparison test!
+
+#include "RedBlackTreeNode.h"
+#include "RedBlackTree.h"
+#include "RedBlackTree.cpp" // Necessary for template class separation
 
 using namespace std;
 
@@ -47,5 +51,19 @@ int main()
 	t.traverse(Dummy::printableValueFunc);
 	cout << endl;
 
+	// Testing red-black tree implementation
+	cout << "Red black tree test:" << endl;
+
+	RedBlackTree<int> rbTree;
+
+	RedBlackTreeNode<int>* n;
+	for (int i = 0; i < 23; i++)
+	{
+		// n = new Node<int>(rand());
+		n = new RedBlackTreeNode<int>(i + 1);
+		rbTree.insert(n);
+	}
+	cout << rbTree.getSize() << endl;
+	//pretty_print_tree(rbTree.getRoot(), rbTree.getNil());
 	return 0;
 }
