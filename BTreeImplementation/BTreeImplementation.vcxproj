@@ -154,6 +154,7 @@
   <ItemGroup>
     <ClInclude Include="BTree.h" />
     <ClInclude Include="BTreeNode.h" />
+    <ClInclude Include="DrawTree.h" />
     <ClInclude Include="Dummy.h" />
     <ClInclude Include="RedBlackTree.h" />
     <ClInclude Include="RedBlackTreeNode.h" />
