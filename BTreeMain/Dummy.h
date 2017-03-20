@@ -20,12 +20,21 @@ public:
 	}
 };
 
-// Dummy object's comparator
-struct DummyComparator : public std::binary_function<Dummy*, Dummy*, bool>
+// Dummy key extractor
+struct DummyExtractor
 {
-	bool operator()(const Dummy* d1, const Dummy*  d2) const
+	int operator()(Dummy& arg)
 	{
-		return d1->value < d2->value;
+		return arg.value;
+	}
+};
+
+// Dummy comparator
+struct DummyComparator
+{
+	bool operator()(Dummy& d1, Dummy& d2)
+	{
+		return d1.value < d2.value;
 	}
 };
 

@@ -1,6 +1,3 @@
-#ifndef RED_BLACK_TREE_H
-#define RED_BLACK_TREE_H
-
 #pragma once
 
 #include "RedBlackTreeNode.h"
@@ -33,5 +30,3 @@ public:
 	RedBlackTreeNode<T>* getNil() { return nil; }
 	RedBlackTreeNode<T>* getRoot() { return root; }
 };
-
-#endif

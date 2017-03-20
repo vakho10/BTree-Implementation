@@ -292,4 +292,3 @@ void RedBlackTree<T>::RBdeleteFixup(RedBlackTreeNode<T>* x)
 	}
 	x->color = 1;
 }
-

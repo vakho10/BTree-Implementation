@@ -1,14 +1,14 @@
 #include "BTree.h"
 
-template<typename T, typename Compare>
-void BTree<T, Compare>::insert(T* k)
+template<typename T, typename Extract, typename Compare>
+void BTree<T, Extract, Compare>::insert(T& k)
 {
 	// If tree is empty
 	if (root == NULL)
 	{
 		// Allocate memory for root
-		root = new BTreeNode<T, Compare>(t, true);
-		root->keys[0] = k;  // Insert key
+		root = new BTreeNode<T, Extract, Compare>(t, true);
+		root->keys[0] = &k;  // Insert key
 		root->n = 1;  // Update number of keys in root
 	}
 	else // If tree is not empty
@@ -17,7 +17,7 @@ void BTree<T, Compare>::insert(T* k)
 		if (root->n == 2 * t - 1)
 		{
 			// Allocate memory for new root
-			BTreeNode<T, Compare> *s = new BTreeNode<T, Compare>(t, false);
+			BTreeNode<T, Extract, Compare> *s = new BTreeNode<T, Extract, Compare>(t, false);
 
 			// Make old root as child of new root
 			s->C[0] = root;
@@ -28,7 +28,7 @@ void BTree<T, Compare>::insert(T* k)
 			// New root has two children now.  Decide which of the
 			// two children is going to have new key
 			int i = 0;
-			if (cmp(s->keys[0], k)) // s->keys[0] < k
+			if (cmp(*s->keys[0], k)) // s->keys[0] < k
 				i++;
 			s->C[i]->insertNonFull(k);
 
@@ -40,8 +40,8 @@ void BTree<T, Compare>::insert(T* k)
 	}
 }
 
-template<typename T, typename Compare>
-void BTree<T, Compare>::remove(T* k)
+template<typename T, typename Extract, typename Compare>
+void BTree<T, Extract, Compare>::remove(T& k)
 {
 	if (!root)
 	{
@@ -56,7 +56,7 @@ void BTree<T, Compare>::remove(T* k)
 	//  if it has a child, otherwise set root as NULL
 	if (root->n == 0)
 	{
-		BTreeNode<T, Compare> *tmp = root;
+		BTreeNode<T, Extract, Compare> *tmp = root;
 		if (root->leaf)
 			root = NULL;
 		else
