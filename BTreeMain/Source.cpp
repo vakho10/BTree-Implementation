@@ -51,7 +51,7 @@ int main()
 		tr1.insert(integers[i]);
 	}
 	tr1.traverse();
-
+	cout << endl;
 
 
 	/*
