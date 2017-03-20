@@ -43,23 +43,23 @@ int main()
 	/*
 		Running simple test on primitive type (int)
 	*/
-	/*BTree<int> tr1(3);
+	BTree<int> tr1(3);
 	int* integers = new int[1000000];
 	for (unsigned int i = 0; i < 1000000; i++) 
 	{
 		integers[i] = i + 1;
 		tr1.insert(integers[i]);
 	}
-	tr1.traverse();*/
+	tr1.traverse();
 
 
 
 	/*
-		Testing Dummy object and custom extractor + comparator
+		Testing Dummy object and custom extractor + (optional) comparator
 	*/
-	BTree<Dummy, DummyExtractor, DummyComparator> t(3); // A B-Tree with minium degree 3
-	//BTree<Dummy, DummyExtractor> t(3); // Doesn't work and I don't know why!
-	//BTree<Dummy, DummyExtractor, Less<Dummy, DummyExtractor>> t(3); // Doesn't work and I don't know why!
+	BTree<Dummy, DummyExtractor> t(3); 
+	//BTree<Dummy, DummyExtractor, DummyComparator> t(3);
+	//BTree<Dummy, DummyExtractor, Less<Dummy, DummyExtractor>> t(3);
 
 	Dummy** dummies = new Dummy*[22]{ new Dummy("D1", 1), new Dummy("D3", 3), new Dummy("D7", 7), new Dummy("D10", 10), new Dummy("D11", 11),
 		new Dummy("D13", 13), new Dummy("D14", 14), new Dummy("D15", 15), new Dummy("D16", 16),	new Dummy("D19", 19), new Dummy("D24", 24),

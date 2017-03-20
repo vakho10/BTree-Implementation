@@ -5,9 +5,9 @@
 */
 // Basic key extractor (returns plain object)
 template<typename T>
-struct PlaintKeyExtractor
+struct PlaintKeyExtractor : std::unary_function<T, T>
 {
-	T operator()(T& elem)
+	result_type operator()(argument_type& elem)
 	{
 		return elem;
 	}
@@ -21,10 +21,16 @@ struct PlaintKeyExtractor
 */
 // Less comparator
 template<typename T, typename Extract = PlaintKeyExtractor<T>>
-struct Less
+struct Less : std::binary_function<T, T, bool>
 {
-	bool operator()(T& firstArg, T& secondArg)
+	Extract ext;
+	Less(Extract& _ext = Extract()) 
 	{
-		return Extract(firstArg) < Extract(secondArg);
+		ext = _ext;
+	}
+
+	result_type operator()(first_argument_type& firstArg, second_argument_type& secondArg)
+	{
+		return ext(firstArg) < ext(secondArg);
 	}
 };

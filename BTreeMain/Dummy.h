@@ -21,18 +21,18 @@ public:
 };
 
 // Dummy key extractor
-struct DummyExtractor
+struct DummyExtractor : std::unary_function<Dummy, int>
 {
-	int operator()(Dummy& arg)
+	result_type operator()(argument_type& arg)
 	{
 		return arg.value;
 	}
 };
 
 // Dummy comparator
-struct DummyComparator
+struct DummyComparator : std::binary_function<Dummy, Dummy, bool>
 {
-	bool operator()(Dummy& d1, Dummy& d2)
+	result_type operator()(first_argument_type& d1, second_argument_type& d2)
 	{
 		return d1.value < d2.value;
 	}
