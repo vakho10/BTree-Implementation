@@ -27,10 +27,11 @@ using namespace std::chrono;
 time_point<high_resolution_clock> start, finish;
 
 int main()
-{	
-	/* 
+{
+	/*
 		Testing how Chrono works...
 	*/
+	cout << "Testing chrono clock:" << endl;
 	start = high_resolution_clock::now();
 	Sleep(200);
 	Sleep(30);
@@ -39,25 +40,72 @@ int main()
 	duration<double> elapsed_seconds = finish - start;
 	cout << "Milliseconds format = " << duration_cast<milliseconds>(finish - start).count() << endl;
 	cout << "Plain format = " << elapsed_seconds.count() << endl;
+	cout << "End of chrono test." << endl << endl;
 
 	/*
-		Running simple test on primitive type (int)
+		Running simple tests for BTree and RedBlackTree (int)
 	*/
-	BTree<int> tr1(3);
-	int* integers = new int[1000000];
-	for (unsigned int i = 0; i < 1000000; i++) 
+	cout << "Testing insertions and deletions (for BTree and RedBlackTree):" << endl;
+	BTree<int> tMillions(3), tTenMillions(3), tHundredMillions(3);
+	for (unsigned int i = 1; i <= 100; i *= 10)
 	{
-		integers[i] = i + 1;
-		tr1.insert(integers[i]);
-	}
-	tr1.traverse();
-	cout << endl;
+		int size = i * 1000000;
 
+		// Fill it with random integers
+		int* integers = new int[size];
+		RedBlackTreeNode<int>** nodes = new RedBlackTreeNode<int>*[size];
+		for (unsigned int j = 0; j < size; j++)
+		{
+			// Ranges from -1000 to 1000
+			integers[j] = -1000 + (rand() % (int)(1000 - (-1000) + 1));
+			nodes[j] = new RedBlackTreeNode<int>(integers[j]);
+		}
+
+		// BTree (Insert)
+		BTree<int> tmpBTree(3);
+		start = high_resolution_clock::now();
+		for (unsigned int j = 0; j < size; j++) 
+			tmpBTree.insert(integers[j]);
+		finish = high_resolution_clock::now();
+		duration<double> elapsed_seconds = finish - start;
+		cout << "Insert BTree " << i << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
+
+		// RedBlackTree (Insert)
+		RedBlackTree<int> tmpRedBlackTree;		
+		start = high_resolution_clock::now();
+		for (unsigned int j = 0; j < size; j++)
+		{
+			tmpRedBlackTree.insert(nodes[j]);
+		}
+		finish = high_resolution_clock::now();
+		elapsed_seconds = finish - start;
+		cout << "Insert RedBlackTree " << i << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
+
+		// BTree (Remove)
+		/*start = high_resolution_clock::now();
+		for (unsigned int j = 0; j < size; j++) 
+			tmpBTree.remove(integers[j]);
+		finish = high_resolution_clock::now();
+		elapsed_seconds = finish - start;
+		cout << "Remove BTree " << i << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;*/
+
+		// RedBlackTree (Remove)
+		/*start = high_resolution_clock::now();
+		for (unsigned int j = 0; j < size; j++) 
+			tmpRedBlackTree.remove(nodes[j]);
+		finish = high_resolution_clock::now();
+		elapsed_seconds = finish - start;
+		cout << "Remove BTree " << i << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;*/
+
+		cout << endl;
+	}
+	cout << "Generic tests ended." << endl << endl;
 
 	/*
 		Testing Dummy object and custom extractor + (optional) comparator
 	*/
-	BTree<Dummy, DummyExtractor> t(3); 
+	cout << "Testing Dummy objest:" << endl;
+	BTree<Dummy, DummyExtractor> t(3);
 	//BTree<Dummy, DummyExtractor, DummyComparator> t(3);
 	//BTree<Dummy, DummyExtractor, Less<Dummy, DummyExtractor>> t(3);
 
@@ -90,8 +138,6 @@ int main()
 	t.traverse();
 	cout << endl;
 
-	// Testing red-black tree implementation
-	cout << "Red black tree test:" << endl;
-
+	cout << "End of Dummy test." << endl << endl;
 	return 0;
 }
