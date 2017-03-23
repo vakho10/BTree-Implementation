@@ -43,6 +43,35 @@ int main()
 	cout << "End of chrono test." << endl << endl;
 
 	/*
+		Testing t parameter for BTree
+	*/
+	cout << "Testing T parameter for BTree:" << endl;
+	for (unsigned int t = 10; t <= 1000; t *= 10)
+	{
+		// Fill it with random integers
+		int* integers = new int[1000000];
+		for (unsigned int j = 0; j < 1000000; j++)
+			// Ranges from -1000 to 1000
+			integers[j] = -1000 + (rand() % (int)(1000 - (-1000) + 1));
+
+		BTree<int> tmpBTree(t);
+		start = high_resolution_clock::now();
+		for (unsigned int j = 0; j < 1000000; j++)
+			tmpBTree.insert(integers[j]);
+		finish = high_resolution_clock::now();
+		duration<double> elapsed_seconds = finish - start;
+		cout << "T param BTree insert " << t << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
+
+		start = high_resolution_clock::now();
+		for (unsigned int j = 0; j < 1000000; j++)
+			tmpBTree.remove(integers[j]);
+		finish = high_resolution_clock::now();
+		elapsed_seconds = finish - start;
+		cout << "T param BTree remove " << t << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
+		cout << endl;
+	}
+
+	/*
 		Running simple tests for BTree and RedBlackTree (int)
 	*/
 	cout << "Testing insertions and deletions (for BTree and RedBlackTree):" << endl;
@@ -64,14 +93,14 @@ int main()
 		// BTree (Insert)
 		BTree<int> tmpBTree(3);
 		start = high_resolution_clock::now();
-		for (unsigned int j = 0; j < size; j++) 
+		for (unsigned int j = 0; j < size; j++)
 			tmpBTree.insert(integers[j]);
 		finish = high_resolution_clock::now();
 		duration<double> elapsed_seconds = finish - start;
 		cout << "Insert BTree " << i << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
 
 		// RedBlackTree (Insert)
-		RedBlackTree<int> tmpRedBlackTree;		
+		RedBlackTree<int> tmpRedBlackTree;
 		start = high_resolution_clock::now();
 		for (unsigned int j = 0; j < size; j++)
 		{
@@ -83,7 +112,7 @@ int main()
 
 		// BTree (Remove)
 		/*start = high_resolution_clock::now();
-		for (unsigned int j = 0; j < size; j++) 
+		for (unsigned int j = 0; j < size; j++)
 			tmpBTree.remove(integers[j]);
 		finish = high_resolution_clock::now();
 		elapsed_seconds = finish - start;
@@ -91,7 +120,7 @@ int main()
 
 		// RedBlackTree (Remove)
 		/*start = high_resolution_clock::now();
-		for (unsigned int j = 0; j < size; j++) 
+		for (unsigned int j = 0; j < size; j++)
 			tmpRedBlackTree.remove(nodes[j]);
 		finish = high_resolution_clock::now();
 		elapsed_seconds = finish - start;
