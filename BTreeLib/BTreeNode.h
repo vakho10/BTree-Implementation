@@ -7,7 +7,7 @@ namespace BTreeLib
 	template<typename T, typename Compare>
 	class BTreeNode
 	{
-		T **keys;  // An array of keys (objects)
+		T *keys;  // An array of keys (objects)
 		int t;      // Minimum degree (defines the range for number of keys)
 		BTreeNode<T, Compare> **C; // An array of child pointers
 		int n;     // Current number of keys
@@ -20,16 +20,16 @@ namespace BTreeLib
 		void traverse();
 
 		// A function to search a key in subtree rooted with this node.
-		BTreeNode<T, Compare> *search(T& k);   // returns NULL if k is not present.
+		BTreeNode<T, Compare> *search(T k);   // returns NULL if k is not present.
 
 		// A function that returns the index of the first key that is greater
 		// or equal to k
-		int findKey(T& k);
+		int findKey(T k);
 
 		// A utility function to insert a new key in the subtree rooted with
 		// this node. The assumption is, the node must be non-full when this
 		// function is called
-		void insertNonFull(T& k);
+		void insertNonFull(T k);
 
 		// A utility function to split the child y of this node. i is index
 		// of y in child array C[].  The Child y must be full when this
@@ -38,7 +38,7 @@ namespace BTreeLib
 
 		// A wrapper function to remove the key k in subtree rooted with
 		// this node.
-		void remove(T& k);
+		void remove(T k);
 
 		// A function to remove the key present in idx-th position in
 		// this node which is a leaf
@@ -50,11 +50,11 @@ namespace BTreeLib
 
 		// A function to get the predecessor of the key- where the key
 		// is present in the idx-th position in the node
-		T* getPred(int idx);
+		T getPred(int idx);
 
 		// A function to get the successor of the key- where the key
 		// is present in the idx-th position in the node
-		T* getSucc(int idx);
+		T getSucc(int idx);
 
 		// A function to fill up the child node present in the idx-th
 		// position in the C[] array if that child has less than t-1 keys

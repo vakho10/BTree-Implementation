@@ -3,14 +3,14 @@
 namespace BTreeLib
 {
 	template<typename T, typename Compare>
-	void BTree<T, Compare>::insert(T& k)
+	void BTree<T, Compare>::insert(T k)
 	{
 		// If tree is empty
 		if (root == NULL)
 		{
 			// Allocate memory for root
 			root = new BTreeNode<T, Compare>(t, true);
-			root->keys[0] = &k;  // Insert key
+			root->keys[0] = k;  // Insert key
 			root->n = 1;  // Update number of keys in root
 		}
 		else // If tree is not empty
@@ -30,7 +30,7 @@ namespace BTreeLib
 				// New root has two children now.  Decide which of the
 				// two children is going to have new key
 				int i = 0;
-				if (cmp(*s->keys[0], k)) // s->keys[0] < k
+				if (cmp(s->keys[0], k)) // s->keys[0] < k
 					i++;
 				s->C[i]->insertNonFull(k);
 
@@ -43,7 +43,7 @@ namespace BTreeLib
 	}
 
 	template<typename T, typename Compare>
-	void BTree<T, Compare>::remove(T& k)
+	void BTree<T, Compare>::remove(T k)
 	{
 		if (!root)
 		{
