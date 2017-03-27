@@ -22,6 +22,7 @@
 
 using namespace std;
 using namespace std::chrono;
+using namespace BTreeLib;
 
 // (C++11 Style) Chrono start and end time points.
 time_point<high_resolution_clock> start, finish;
