@@ -2,8 +2,8 @@
 
 namespace BTreeLib
 {
-	template<typename T, typename Extract, typename Compare>
-	BTreeNode<T, Extract, Compare>::BTreeNode(int _t, bool _leaf, Extract& _ext = Extract(), Compare& _cmp = Compare())
+	template<typename T, typename Compare>
+	BTreeNode<T, Compare>::BTreeNode(int _t, bool _leaf, Compare& _cmp = Compare())
 	{
 		// Copy the given minimum degree and leaf property
 		t = _t;
@@ -12,19 +12,18 @@ namespace BTreeLib
 		// Allocate memory for maximum number of possible keys
 		// and child pointers
 		keys = new T*[2 * t - 1];
-		C = new BTreeNode<T, Extract, Compare> *[2 * t];
+		C = new BTreeNode<T, Compare> *[2 * t];
 
 		// Initialize the number of keys as 0
 		n = 0;
 
 		cmp = _cmp;
-		ext = _ext;
 	}
 
 	// A utility function that returns the index of the first key that is
 	// greater than or equal to k
-	template<typename T, typename Extract, typename Compare>
-	int BTreeNode<T, Extract, Compare>::findKey(T& k)
+	template<typename T, typename Compare>
+	int BTreeNode<T, Compare>::findKey(T& k)
 	{
 		int idx = 0;
 		while (idx < n && cmp(*keys[idx], k)) // keys[idx] < k
@@ -33,14 +32,14 @@ namespace BTreeLib
 	}
 
 	// A function to remove the key k from the sub-tree rooted with this node
-	template<typename T, typename Extract, typename Compare>
-	void BTreeNode<T, Extract, Compare>::remove(T& k)
+	template<typename T, typename Compare>
+	void BTreeNode<T, Compare>::remove(T& k)
 	{
 		int idx = findKey(k);
 
 		// The key to be removed is present in this node
 		if (idx < n
-			&& ext(*keys[idx]) == ext(k)) // keys[idx] == k!
+			&& *keys[idx] == k) // keys[idx] == k!
 		{
 			// If the node is a leaf node - removeFromLeaf is called
 			// Otherwise, removeFromNonLeaf function is called
@@ -54,7 +53,7 @@ namespace BTreeLib
 			// If this node is a leaf node, then the key is not present in tree
 			if (leaf)
 			{
-				cout << "The key " << ext(k) << " is does not exist in the tree\n";
+				cout << "The key " << k << " is does not exist in the tree\n";
 				return;
 			}
 
@@ -80,8 +79,8 @@ namespace BTreeLib
 	}
 
 	// A function to remove the idx-th key from this node - which is a leaf node
-	template<typename T, typename Extract, typename Compare>
-	void BTreeNode<T, Extract, Compare>::removeFromLeaf(int idx)
+	template<typename T, typename Compare>
+	void BTreeNode<T, Compare>::removeFromLeaf(int idx)
 	{
 
 		// Move all the keys after the idx-th pos one place backward
@@ -95,8 +94,8 @@ namespace BTreeLib
 	}
 
 	// A function to remove the idx-th key from this node - which is a non-leaf node
-	template<typename T, typename Extract, typename Compare>
-	void BTreeNode<T, Extract, Compare>::removeFromNonLeaf(int idx)
+	template<typename T, typename Compare>
+	void BTreeNode<T, Compare>::removeFromNonLeaf(int idx)
 	{
 		T* k = keys[idx];
 
@@ -136,11 +135,11 @@ namespace BTreeLib
 	}
 
 	// A function to get predecessor of keys[idx]
-	template<typename T, typename Extract, typename Compare>
-	T* BTreeNode<T, Extract, Compare>::getPred(int idx)
+	template<typename T, typename Compare>
+	T* BTreeNode<T, Compare>::getPred(int idx)
 	{
 		// Keep moving to the right most node until we reach a leaf
-		BTreeNode<T, Extract, Compare> *cur = C[idx];
+		BTreeNode<T, Compare> *cur = C[idx];
 		while (!cur->leaf)
 			cur = cur->C[cur->n];
 
@@ -148,12 +147,12 @@ namespace BTreeLib
 		return cur->keys[cur->n - 1];
 	}
 
-	template<typename T, typename Extract, typename Compare>
-	T* BTreeNode<T, Extract, Compare>::getSucc(int idx)
+	template<typename T, typename Compare>
+	T* BTreeNode<T, Compare>::getSucc(int idx)
 	{
 
 		// Keep moving the left most node starting from C[idx+1] until we reach a leaf
-		BTreeNode<T, Extract, Compare> *cur = C[idx + 1];
+		BTreeNode<T, Compare> *cur = C[idx + 1];
 		while (!cur->leaf)
 			cur = cur->C[0];
 
@@ -162,8 +161,8 @@ namespace BTreeLib
 	}
 
 	// A function to fill child C[idx] which has less than t-1 keys
-	template<typename T, typename Extract, typename Compare>
-	void BTreeNode<T, Extract, Compare>::fill(int idx)
+	template<typename T, typename Compare>
+	void BTreeNode<T, Compare>::fill(int idx)
 	{
 
 		// If the previous child(C[idx-1]) has more than t-1 keys, borrow a key
@@ -191,11 +190,11 @@ namespace BTreeLib
 
 	// A function to borrow a key from C[idx-1] and insert it
 	// into C[idx]
-	template<typename T, typename Extract, typename Compare>
-	void BTreeNode<T, Extract, Compare>::borrowFromPrev(int idx)
+	template<typename T, typename Compare>
+	void BTreeNode<T, Compare>::borrowFromPrev(int idx)
 	{
-		BTreeNode<T, Extract, Compare> *child = C[idx];
-		BTreeNode<T, Extract, Compare> *sibling = C[idx - 1];
+		BTreeNode<T, Compare> *child = C[idx];
+		BTreeNode<T, Compare> *sibling = C[idx - 1];
 
 		// The last key from C[idx-1] goes up to the parent and key[idx-1]
 		// from parent is inserted as the first key in C[idx]. Thus, the  loses
@@ -231,11 +230,11 @@ namespace BTreeLib
 
 	// A function to borrow a key from the C[idx+1] and place
 	// it in C[idx]
-	template<typename T, typename Extract, typename Compare>
-	void BTreeNode<T, Extract, Compare>::borrowFromNext(int idx)
+	template<typename T, typename Compare>
+	void BTreeNode<T, Compare>::borrowFromNext(int idx)
 	{
-		BTreeNode<T, Extract, Compare> *child = C[idx];
-		BTreeNode<T, Extract, Compare> *sibling = C[idx + 1];
+		BTreeNode<T, Compare> *child = C[idx];
+		BTreeNode<T, Compare> *sibling = C[idx + 1];
 
 		// keys[idx] is inserted as the last key in C[idx]
 		child->keys[(child->n)] = keys[idx];
@@ -269,11 +268,11 @@ namespace BTreeLib
 
 	// A function to merge C[idx] with C[idx+1]
 	// C[idx+1] is freed after merging
-	template<typename T, typename Extract, typename Compare>
-	void BTreeNode<T, Extract, Compare>::merge(int idx)
+	template<typename T, typename Compare>
+	void BTreeNode<T, Compare>::merge(int idx)
 	{
-		BTreeNode<T, Extract, Compare> *child = C[idx];
-		BTreeNode<T, Extract, Compare> *sibling = C[idx + 1];
+		BTreeNode<T, Compare> *child = C[idx];
+		BTreeNode<T, Compare> *sibling = C[idx + 1];
 
 		// Pulling a key from the current node and inserting it into (t-1)th
 		// position of C[idx]
@@ -312,8 +311,8 @@ namespace BTreeLib
 	// A utility function to insert a new key in this node
 	// The assumption is, the node must be non-full when this
 	// function is called
-	template<typename T, typename Extract, typename Compare>
-	void BTreeNode<T, Extract, Compare>::insertNonFull(T& k)
+	template<typename T, typename Compare>
+	void BTreeNode<T, Compare>::insertNonFull(T& k)
 	{
 		// Initialize index as index of rightmost element
 		int i = n - 1;
@@ -358,12 +357,12 @@ namespace BTreeLib
 
 	// A utility function to split the child y of this node
 	// Note that y must be full when this function is called
-	template<typename T, typename Extract, typename Compare>
-	void BTreeNode<T, Extract, Compare>::splitChild(int i, BTreeNode<T, Extract, Compare> *y)
+	template<typename T, typename Compare>
+	void BTreeNode<T, Compare>::splitChild(int i, BTreeNode<T, Compare> *y)
 	{
 		// Create a new node which is going to store (t-1) keys
 		// of y
-		BTreeNode<T, Extract, Compare> *z = new BTreeNode<T, Extract, Compare>(y->t, y->leaf);
+		BTreeNode<T, Compare> *z = new BTreeNode<T, Compare>(y->t, y->leaf);
 		z->n = t - 1;
 
 		// Copy the last (t-1) keys of y to z
@@ -401,8 +400,8 @@ namespace BTreeLib
 	}
 
 	// Function to traverse all nodes in a subtree rooted with this node (needs to specify the printableValue(..) function)
-	template<typename T, typename Extract, typename Compare>
-	void BTreeNode<T, Extract, Compare>::traverse()
+	template<typename T, typename Compare>
+	void BTreeNode<T, Compare>::traverse()
 	{
 		// There are n keys and n+1 children, travers through n keys
 		// and first n children
@@ -413,7 +412,7 @@ namespace BTreeLib
 			// traverse the subtree rooted with child C[i].
 			if (leaf == false)
 				C[i]->traverse();
-			cout << " " << ext(*keys[i]);
+			cout << " " << *keys[i];
 		}
 
 		// Print the subtree rooted with last child
@@ -422,8 +421,8 @@ namespace BTreeLib
 	}
 
 	// Function to search key k in subtree rooted with this node
-	template<typename T, typename Extract, typename Compare>
-	BTreeNode<T, Extract, Compare> *BTreeNode<T, Extract, Compare>::search(T& k)
+	template<typename T, typename Compare>
+	BTreeNode<T, Compare> *BTreeNode<T, Compare>::search(T& k)
 	{
 		// Find the first key greater than or equal to k
 		int i = 0;

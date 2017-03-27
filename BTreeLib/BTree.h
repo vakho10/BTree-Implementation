@@ -1,26 +1,24 @@
 #pragma once
 
 #include <string>
+#include <functional>
 
 #include "BTreeNode.h"
-#include "Functions.h" // Contains comparators and extractors
 
 namespace BTreeLib 
 {
-	template<typename T, typename Extract = PlaintKeyExtractor<T>, typename Compare = Less<T, Extract> >
+	template<typename T, typename Compare = std::less<T> >
 	class BTree
 	{
-		BTreeNode<T, Extract, Compare> *root; // Pointer to root node
+		BTreeNode<T, Compare> *root; // Pointer to root node
 		int t;  // Minimum degree
-		Extract ext; // Custom key extractor
 		Compare cmp; // Custom comparator
 	public:
 		// Constructor (Initializes tree as empty)
-		BTree(int _t, Extract& _ext = Extract(), Compare& _cmp = Compare())
+		BTree(int _t, Compare& _cmp = Compare())
 		{
 			root = NULL;
 			t = _t;
-			ext = _ext;
 			cmp = _cmp;
 		}
 
@@ -31,7 +29,7 @@ namespace BTreeLib
 		}
 
 		// function to search a key in this tree
-		BTreeNode<T, Extract, Compare>* search(T& k)
+		BTreeNode<T, Compare>* search(T& k)
 		{
 			return (root == NULL) ? NULL : root->search(k);
 		}

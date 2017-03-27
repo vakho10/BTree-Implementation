@@ -2,14 +2,14 @@
 
 namespace BTreeLib
 {
-	template<typename T, typename Extract, typename Compare>
-	void BTree<T, Extract, Compare>::insert(T& k)
+	template<typename T, typename Compare>
+	void BTree<T, Compare>::insert(T& k)
 	{
 		// If tree is empty
 		if (root == NULL)
 		{
 			// Allocate memory for root
-			root = new BTreeNode<T, Extract, Compare>(t, true);
+			root = new BTreeNode<T, Compare>(t, true);
 			root->keys[0] = &k;  // Insert key
 			root->n = 1;  // Update number of keys in root
 		}
@@ -19,7 +19,7 @@ namespace BTreeLib
 			if (root->n == 2 * t - 1)
 			{
 				// Allocate memory for new root
-				BTreeNode<T, Extract, Compare> *s = new BTreeNode<T, Extract, Compare>(t, false);
+				BTreeNode<T, Compare> *s = new BTreeNode<T, Compare>(t, false);
 
 				// Make old root as child of new root
 				s->C[0] = root;
@@ -42,8 +42,8 @@ namespace BTreeLib
 		}
 	}
 
-	template<typename T, typename Extract, typename Compare>
-	void BTree<T, Extract, Compare>::remove(T& k)
+	template<typename T, typename Compare>
+	void BTree<T, Compare>::remove(T& k)
 	{
 		if (!root)
 		{
@@ -58,7 +58,7 @@ namespace BTreeLib
 		//  if it has a child, otherwise set root as NULL
 		if (root->n == 0)
 		{
-			BTreeNode<T, Extract, Compare> *tmp = root;
+			BTreeNode<T, Compare> *tmp = root;
 			if (root->leaf)
 				root = NULL;
 			else

@@ -147,9 +147,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Dummy.h" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>

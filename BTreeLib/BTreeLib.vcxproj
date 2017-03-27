@@ -148,7 +148,6 @@
   <ItemGroup>
     <ClInclude Include="BTree.h" />
     <ClInclude Include="BTreeNode.h" />
-    <ClInclude Include="Functions.h" />
     <ClInclude Include="RedBlackTree.h" />
     <ClInclude Include="RedBlackTreeNode.h" />
   </ItemGroup>
