@@ -25,78 +25,47 @@ using namespace BTreeLib;
 
 // (C++11 Style) Chrono start and end time points.
 time_point<high_resolution_clock> start, finish;
+duration<double> elapsed_seconds;
 
 int main()
 {
-	set<int> s;
-	s.insert(1);
+	/*
+		Testing t parameter (10, 100, 1000) for BTree (1m, 10m, 100m)
+	*/
+	cout << "Testing T parameter for BTree:" << endl;
+	for (unsigned int t = 10; t <= 1000; t *= 10)
+	{
+		BTree<int> tmpBTree(t);
+		for (unsigned int i = 1; i <= 100; i *= 10)
+		{
+			int size = 1000000 * i;
+			cout << "Size: " << size << endl;
 
-	BTree<double> doubleBTree(3);
-	doubleBTree.insert(1);
-	doubleBTree.insert(2);
-	doubleBTree.insert(3);
-	doubleBTree.insert(6);
-	doubleBTree.insert(4);
-	doubleBTree.insert(5);
-	doubleBTree.traverse();
-	cout << endl;
+			// Fill it with random integers
+			int* integers = new int[size];
+			for (unsigned int j = 0; j < size; j++)
+				integers[j] = -1000 + (rand() % (int)(1000 - (-1000) + 1)); // Ranges from -1000 to 1000
 
-	doubleBTree.remove(6);
-	doubleBTree.traverse();
-	cout << endl;
+			start = high_resolution_clock::now();
+			for (unsigned int j = 0; j < size; j++)
+				tmpBTree.insert(integers[j]);
+			finish = high_resolution_clock::now();
+			elapsed_seconds = finish - start;
+			cout << "Insert BTree -> t: " << t << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
 
-	doubleBTree.search(1)->traverse(); 
-	cout << endl;
-
-	doubleBTree.search(4)->traverse();
-	cout << endl;
+			start = high_resolution_clock::now();
+			for (unsigned int j = 0; j < size; j++)
+				tmpBTree.remove(integers[j]);
+			finish = high_resolution_clock::now();
+			elapsed_seconds = finish - start;
+			cout << "Delete BTree -> t: " << t << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
+		}
+		cout << endl;
+	}
 
 	/*
-		Testing how Chrono works...
+		Running simple tests for BTree and RedBlackTree (int)
 	*/
-	//cout << "Testing chrono clock:" << endl;
-	//start = high_resolution_clock::now();
-	//Sleep(200);
-	//Sleep(30);
-	//Sleep(4);
-	//finish = high_resolution_clock::now();
-	//duration<double> elapsed_seconds = finish - start;
-	//cout << "Milliseconds format = " << duration_cast<milliseconds>(finish - start).count() << endl;
-	//cout << "Plain format = " << elapsed_seconds.count() << endl;
-	//cout << "End of chrono test." << endl << endl;
-
-	///*
-	//	Testing t parameter for BTree
-	//*/
-	//cout << "Testing T parameter for BTree:" << endl;
-	//for (unsigned int t = 10; t <= 1000; t *= 10)
-	//{
-	//	// Fill it with random integers
-	//	int* integers = new int[1000000];
-	//	for (unsigned int j = 0; j < 1000000; j++)
-	//		// Ranges from -1000 to 1000
-	//		integers[j] = -1000 + (rand() % (int)(1000 - (-1000) + 1));
-
-	//	BTree<int> tmpBTree(t);
-	//	start = high_resolution_clock::now();
-	//	for (unsigned int j = 0; j < 1000000; j++)
-	//		tmpBTree.insert(integers[j]);
-	//	finish = high_resolution_clock::now();
-	//	duration<double> elapsed_seconds = finish - start;
-	//	cout << "T param BTree insert " << t << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
-
-	//	start = high_resolution_clock::now();
-	//	for (unsigned int j = 0; j < 1000000; j++)
-	//		tmpBTree.remove(integers[j]);
-	//	finish = high_resolution_clock::now();
-	//	elapsed_seconds = finish - start;
-	//	cout << "T param BTree remove " << t << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
-	//	cout << endl;
-	//}
-
-	///*
-	//	Running simple tests for BTree and RedBlackTree (int)
-	//*/
 	//cout << "Testing insertions and deletions (for BTree and RedBlackTree):" << endl;
 	//BTree<int> tMillions(3), tTenMillions(3), tHundredMillions(3);
 	//for (unsigned int i = 1; i <= 100; i *= 10)
@@ -151,6 +120,6 @@ int main()
 
 	//	cout << endl;
 	//}
-	//cout << "Generic tests ended." << endl << endl;
-	//return 0;
+	cout << "Generic tests ended." << endl << endl;
+	return 0;
 }
