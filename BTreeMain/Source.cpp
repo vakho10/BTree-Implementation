@@ -5,8 +5,8 @@
 #include <iostream>
 #include <string>
 #include <chrono>
-#include <Windows.h>
 #include <set>
+#include <cstdlib> 
 
 #include "BTree.h"
 #include "BTree.cpp" // To fix template class separation
@@ -64,43 +64,43 @@ int main()
 	}
 
 	/*
-		Running simple tests for BTree and RedBlackTree (int)
+		Running simple tests for BTree and RedBlackTree (insertion)
 	*/
-	//cout << "Testing insertions and deletions (for BTree and RedBlackTree):" << endl;
-	//BTree<int> tMillions(3), tTenMillions(3), tHundredMillions(3);
-	//for (unsigned int i = 1; i <= 100; i *= 10)
-	//{
-	//	int size = i * 1000000;
+	cout << "testing insertions and deletions (for btree and redblacktree):" << endl;
+	for (unsigned int i = 1; i <= 100; i *= 10)
+	{
+		int size = i * 1000000;
 
-	//	// Fill it with random integers
-	//	int* integers = new int[size];
-	//	RedBlackTreeNode<int>** nodes = new RedBlackTreeNode<int>*[size];
-	//	for (unsigned int j = 0; j < size; j++)
-	//	{
-	//		// Ranges from -1000 to 1000
-	//		integers[j] = -1000 + (rand() % (int)(1000 - (-1000) + 1));
-	//		nodes[j] = new RedBlackTreeNode<int>(integers[j]);
-	//	}
+		// fill it with random integers
+		int* integers = new int[size];
+		RedBlackTreeNode<int>** nodes = new RedBlackTreeNode<int>*[size];
+		for (unsigned int j = 0; j < size; j++)
+		{
+			// ranges from -1000 to 1000
+			integers[j] = -1000 + (rand() % (int)(1000 - (-1000) + 1));
+			nodes[j] = new RedBlackTreeNode<int>(integers[j]);
+		}
 
-	//	// BTree (Insert)
-	//	BTree<int> tmpBTree(3);
-	//	start = high_resolution_clock::now();
-	//	for (unsigned int j = 0; j < size; j++)
-	//		tmpBTree.insert(integers[j]);
-	//	finish = high_resolution_clock::now();
-	//	duration<double> elapsed_seconds = finish - start;
-	//	cout << "Insert BTree " << i << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
+		// BTree (Insert)
+		BTree<int> tmpBTree(100);
+		start = high_resolution_clock::now();
+		for (unsigned int j = 0; j < size; j++)
+			tmpBTree.insert(integers[j]);
+		finish = high_resolution_clock::now();
+		duration<double> elapsed_seconds = finish - start;
+		cout << "Insert BTree " << i << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
 
-	//	// RedBlackTree (Insert)
-	//	RedBlackTree<int> tmpRedBlackTree;
-	//	start = high_resolution_clock::now();
-	//	for (unsigned int j = 0; j < size; j++)
-	//	{
-	//		tmpRedBlackTree.insert(nodes[j]);
-	//	}
-	//	finish = high_resolution_clock::now();
-	//	elapsed_seconds = finish - start;
-	//	cout << "Insert RedBlackTree " << i << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
+		// RedBlackTree (Insert)
+		RedBlackTree<int> tmpRedBlackTree;
+		start = high_resolution_clock::now();
+		for (unsigned int j = 0; j < size; j++)
+		{
+			tmpRedBlackTree.insert(nodes[j]);
+		}
+		finish = high_resolution_clock::now();
+		elapsed_seconds = finish - start;
+		cout << "Insert RedBlackTree " << i << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
+	}
 
 	//	// BTree (Remove)
 	//	/*start = high_resolution_clock::now();
