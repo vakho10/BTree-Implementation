@@ -1,10 +1,11 @@
 #pragma once
 
 #include <string>
+#include <functional>
 
 namespace BTreeLib
 {
-	template<typename T, typename Compare>
+	template<typename T, typename Compare = std::less<T>>
 	class BTreeNode
 	{
 		T *keys;  // An array of keys (objects)
