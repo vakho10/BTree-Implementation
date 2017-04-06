@@ -1,5 +1,5 @@
 int main() 
 {
-	// Dummy main
+	// Empty main function
 	return 0;
 }
