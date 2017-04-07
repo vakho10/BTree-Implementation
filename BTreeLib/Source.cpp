@@ -1,5 +1,4 @@
-int main() 
+int main()
 {
-	// Empty main function
-	return 0;
+	// Empty main.
 }

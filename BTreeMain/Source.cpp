@@ -17,10 +17,7 @@
 #include "BTreeNode.h"
 #include "BTreeNode.cpp" // To fix template class separation
 
-#include "RedBlackTreeNode.h"
-
-#include "RedBlackTree.h"
-#include "RedBlackTree.cpp" // To fix template class separation
+#include "RB.h"
 
 using namespace std;
 using namespace std::chrono;
@@ -104,11 +101,6 @@ void checkInsertion()
 	cout << "Testing insertions:" << endl;
 	for (unsigned int size = 1000000; size <= HUNDRED_MILLION; size *= 10)
 	{
-		// Create nodes for red-black tree
-		RedBlackTreeNode<int>** nodes = new RedBlackTreeNode<int>*[size];
-		for (unsigned int j = 0; j < size; j++)
-			nodes[j] = new RedBlackTreeNode<int>(integers[j]);
-
 		// BTree (insert)
 		BTree<int> tmpBTree(bestT);
 		start = high_resolution_clock::now();
@@ -118,10 +110,10 @@ void checkInsertion()
 		cout << "Insert BTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
 
 		// RedBlackTree (insert)
-		RedBlackTree<int> tmpRedBlackTree;
+		Tree<int> tmpRedBlackTree;
 		start = high_resolution_clock::now();
 		for (unsigned int j = 0; j < size; j++)
-			tmpRedBlackTree.insert(nodes[j]);
+			tmpRedBlackTree.RB_insert(new Node<int>(integers[j]));
 		finish = high_resolution_clock::now();
 		cout << "Insert RedBlackTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
 
@@ -146,7 +138,7 @@ void checkSearch()
 		cout << "Search BTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
 
 		// RedBlackTree (search)
-		RedBlackTree<int> tmpRedBlackTree;
+		Tree<int> tmpRedBlackTree;
 		start = high_resolution_clock::now();
 		for (unsigned int j = 0; j < size; j++)
 			tmpRedBlackTree.search(integers[j]); // Finds by key!
@@ -160,24 +152,19 @@ void checkDelection()
 	cout << "Testing deletion:" << endl;
 	for (unsigned int size = 1000000; size <= HUNDRED_MILLION; size *= 10)
 	{
-		// Create nodes for red-black tree
-		RedBlackTreeNode<int>** nodes = new RedBlackTreeNode<int>*[size];
-		for (unsigned int j = 0; j < size; j++)
-			nodes[j] = new RedBlackTreeNode<int>(integers[j]);
-
 		// BTree (delete)
 		BTree<int> tmpBTree(bestT);
 		start = high_resolution_clock::now();
 		for (unsigned int j = 0; j < size; j++)
-			tmpBTree.remove(integers[j]); // But this finds the whole node right?
+			tmpBTree.remove(integers[j]);
 		finish = high_resolution_clock::now();
 		cout << "Search BTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
 
 		// RedBlackTree (delete)
-		RedBlackTree<int> tmpRedBlackTree;
+		Tree<int> tmpRedBlackTree;
 		start = high_resolution_clock::now();
 		for (unsigned int j = 0; j < size; j++)
-			tmpRedBlackTree.remove(nodes[j]); // Finds by key!
+			tmpRedBlackTree.RB_delete(new Node<int>(integers[j]));
 		finish = high_resolution_clock::now();
 		cout << "Search RedBlackTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
 
