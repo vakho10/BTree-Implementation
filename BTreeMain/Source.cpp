@@ -10,6 +10,7 @@
 #include <set>
 #include <cstdlib> 
 #include <memory>
+#include <random>
 
 #include "BTree.h"
 #include "BTree.cpp" // To fix template class separation
@@ -27,13 +28,12 @@ using namespace BTreeLib;
 time_point<high_resolution_clock> start, finish; // (C++11 Style) Chrono start and end time points.
 int* integers;
 int bestT = 100; // Has been checked previously
+Node<int>** rbNodes;
 
 // Prototypes:
 void generateAndFillRandomIntegersFromRange(int from, int to);
 void testAndDetermineBestT();
-void checkInsertion();
-void checkSearch();
-void checkDelection();
+void checkInsertionSearchDeletion();
 
 // MAIN
 int main()
@@ -42,19 +42,22 @@ int main()
 	
 	//testAndDetermineBestT(); // Testing t parameter (10, 100, 1000) for BTree (1m, 10m, 100m)	
 	
-	checkInsertion(); // Insersion tests
-	checkSearch(); // Search tests
-	checkDelection(); // Deletion tests
-	
+	checkInsertionSearchDeletion();
+
 	cout << "All the test have finished." << endl << endl;
 	return 0;
 }
 
 void generateAndFillRandomIntegersFromRange(int from, int to) 
 {
+	std::random_device rd;
+	std::mt19937 rng(rd());
+	std::uniform_int_distribution<int> uni(from, to);
+
 	integers = new int[HUNDRED_MILLION];
-	for (size_t i = 0; i < HUNDRED_MILLION; i++)
-		integers[i] = from + (rand() % (int)(to - from + 1));
+	for (size_t i = 0; i < HUNDRED_MILLION; i++) {
+		integers[i] = uni(rng);
+	}
 }
 
 void testAndDetermineBestT() 
@@ -96,11 +99,15 @@ void testAndDetermineBestT()
 	cout << "Optimal T is: " << bestT << endl;
 }
 
-void checkInsertion()
+void checkInsertionSearchDeletion()
 {
 	cout << "Testing insertions:" << endl;
 	for (unsigned int size = 1000000; size <= HUNDRED_MILLION; size *= 10)
 	{
+		rbNodes = new Node<int>*[size];
+		for (size_t i = 0; i < size; i++)
+			rbNodes[i] = new Node<int>(integers[i]);		
+
 		// BTree (insert)
 		BTree<int> tmpBTree(bestT);
 		start = high_resolution_clock::now();
@@ -112,48 +119,26 @@ void checkInsertion()
 		// RedBlackTree (insert)
 		Tree<int> tmpRedBlackTree;
 		start = high_resolution_clock::now();
-		for (unsigned int j = 0; j < size; j++)
-			tmpRedBlackTree.RB_insert(new Node<int>(integers[j]));
+		for (unsigned int j = 0; j < size; j++)					
+			tmpRedBlackTree.RB_insert(rbNodes[j]);		
 		finish = high_resolution_clock::now();
 		cout << "Insert RedBlackTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
 
-		// There is no garbage collectors here!
-		/*for (unsigned int j = 0; j < size; j++)
-			delete nodes[j];
-		delete[] nodes;*/
-	}
-}
-
-void checkSearch() 
-{
-	cout << "Testing search:" << endl;
-	for (unsigned int size = 1000000; size <= HUNDRED_MILLION; size *= 10)
-	{
 		// BTree (search)
-		BTree<int> tmpBTree(bestT);
 		start = high_resolution_clock::now();
 		for (unsigned int j = 0; j < size; j++)
-			tmpBTree.search(integers[j]); // But this finds the whole node right?
+			tmpBTree.search(integers[j]);
 		finish = high_resolution_clock::now();
 		cout << "Search BTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
 
 		// RedBlackTree (search)
-		Tree<int> tmpRedBlackTree;
 		start = high_resolution_clock::now();
 		for (unsigned int j = 0; j < size; j++)
-			tmpRedBlackTree.search(integers[j]); // Finds by key!
+			tmpRedBlackTree.search(integers[j]);
 		finish = high_resolution_clock::now();
 		cout << "Search RedBlackTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
-	}
-}
 
-void checkDelection() 
-{
-	cout << "Testing deletion:" << endl;
-	for (unsigned int size = 1000000; size <= HUNDRED_MILLION; size *= 10)
-	{
 		// BTree (delete)
-		BTree<int> tmpBTree(bestT);
 		start = high_resolution_clock::now();
 		for (unsigned int j = 0; j < size; j++)
 			tmpBTree.remove(integers[j]);
@@ -161,16 +146,12 @@ void checkDelection()
 		cout << "Search BTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
 
 		// RedBlackTree (delete)
-		Tree<int> tmpRedBlackTree;
 		start = high_resolution_clock::now();
-		for (unsigned int j = 0; j < size; j++)
-			tmpRedBlackTree.RB_delete(new Node<int>(integers[j]));
+		for (unsigned int j = 0; j < size; j++) {
+			tmpRedBlackTree.RB_delete(rbNodes[j]);
+			cout << "Deleted: " << rbNodes[j]->data << ", size: " << tmpRedBlackTree.getSize() << endl;
+		}
 		finish = high_resolution_clock::now();
 		cout << "Search RedBlackTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
-
-		// There is no garbage collectors here!
-		/*for (unsigned int j = 0; j < size; j++)
-			delete nodes[j];
-		delete[] nodes;*/
 	}
 }
