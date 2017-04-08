@@ -342,8 +342,9 @@ void Tree<T>::RBdeleteFixup(Node<T>* x)
 				w->color = 1;
 				x->p->color = 0;
 				rotateRight(x->p);
-				w = x->p->right;
+				w = x->p->left;   //აქ ეწერა რომ მარჯვენა სიბლინგი მიინიჭეო, ე. ი. კოპირებისა დარჩა
 			}
+
 			if (w->left->color == 1 && w->right->color == 1)
 			{
 				w->color = 0;
