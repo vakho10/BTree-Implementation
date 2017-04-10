@@ -113,8 +113,10 @@ void Tree<T>::insertBST(Node<T>* z)
 			x = x->right;
 	}
 	z->p = y;
-	if (y == nil)
+	if (y == nil) {
 		root = z;
+		z->p = nil;			//this
+	}
 	else
 		//if (z->data < y->data)
 		if (p(z->data, y->data))
@@ -247,6 +249,7 @@ void Tree<T>::transplant(Node<T>* u, Node<T>* v)
 	if (u->p == nil)
 	{
 		root = v;
+		v->p = nil;				//this
 		return;
 	}
 	if (u == u->p->left)

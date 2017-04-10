@@ -39,16 +39,16 @@ void checkInsertionSearchDeletion();
 int main()
 {
 	generateAndFillRandomIntegersFromRange(-1000, 1000); // Generate random integers (from range)
-	
+
 	//testAndDetermineBestT(); // Testing t parameter (10, 100, 1000) for BTree (1m, 10m, 100m)	
-	
+
 	checkInsertionSearchDeletion();
 
 	cout << "All the test have finished." << endl << endl;
 	return 0;
 }
 
-void generateAndFillRandomIntegersFromRange(int from, int to) 
+void generateAndFillRandomIntegersFromRange(int from, int to)
 {
 	std::random_device rd;
 	std::mt19937 rng(rd());
@@ -60,7 +60,7 @@ void generateAndFillRandomIntegersFromRange(int from, int to)
 	}
 }
 
-void testAndDetermineBestT() 
+void testAndDetermineBestT()
 {
 	int TsAndTimes[3][2]; // { t, insert_time }
 
@@ -94,7 +94,7 @@ void testAndDetermineBestT()
 	for (size_t i = 0; i < 3; i++)
 		if (TsAndTimes[i][1] < TsAndTimes[minimalIndex][1])
 			minimalIndex = i;
-	
+
 	bestT = TsAndTimes[minimalIndex][0];
 	cout << "Optimal T is: " << bestT << endl;
 }
@@ -106,30 +106,31 @@ void checkInsertionSearchDeletion()
 	{
 		rbNodes = new Node<int>*[size];
 		for (size_t i = 0; i < size; i++)
-			rbNodes[i] = new Node<int>(integers[i]);		
+			rbNodes[i] = new Node<int>(integers[i]);
 
-		//// BTree (insert)
-		//BTree<int> tmpBTree(bestT);
-		//start = high_resolution_clock::now();
-		//for (unsigned int j = 0; j < size; j++)
-		//	tmpBTree.insert(integers[j]);
-		//finish = high_resolution_clock::now();
-		//cout << "Insert BTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
+		// BTree (insert)
+		BTree<int> tmpBTree(bestT);
+		start = high_resolution_clock::now();
+		for (unsigned int j = 0; j < size; j++)
+			tmpBTree.insert(integers[j]);
+		finish = high_resolution_clock::now();
+		cout << "Insert BTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
 
 		// RedBlackTree (insert)
 		Tree<int> tmpRedBlackTree;
 		start = high_resolution_clock::now();
-		for (unsigned int j = 0; j < size; j++)					
-			tmpRedBlackTree.RB_insert(rbNodes[j]);		
+		for (unsigned int j = 0; j < size; j++) {
+			tmpRedBlackTree.RB_insert(rbNodes[j]);
+		}
 		finish = high_resolution_clock::now();
 		cout << "Insert RedBlackTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
 
 		// BTree (search)
-		/*start = high_resolution_clock::now();
+		start = high_resolution_clock::now();
 		for (size_t j = 0; j < size; j++)
 			tmpBTree.search(integers[j])->findKey(integers[j]);
 		finish = high_resolution_clock::now();
-		cout << "Search BTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;*/
+		cout << "Search BTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
 
 		// RedBlackTree (search)
 		start = high_resolution_clock::now();
@@ -139,19 +140,18 @@ void checkInsertionSearchDeletion()
 		cout << "Search RedBlackTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
 
 		// BTree (delete)
-		//start = high_resolution_clock::now();
-		//for (unsigned int j = 0; j < size; j++)
-		//	tmpBTree.remove(integers[j]);
-		//finish = high_resolution_clock::now();
-		//cout << "Search BTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
+		start = high_resolution_clock::now();
+		for (unsigned int j = 0; j < size; j++)
+			tmpBTree.remove(integers[j]);
+		finish = high_resolution_clock::now();
+		cout << "Delete BTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
 
 		//// RedBlackTree (delete)
-		//start = high_resolution_clock::now();
-		//for (size_t j = 0; j < size; j++) {
-		//	tmpRedBlackTree.RB_delete(rbNodes[j]);
-		//	cout << "Deleted: " << rbNodes[j]->data << ", size: " << tmpRedBlackTree.getSize() << endl;
-		//}
-		//finish = high_resolution_clock::now();
-		//cout << "Search RedBlackTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
+		start = high_resolution_clock::now();
+		for (size_t j = 0; j < size; j++) {
+			tmpRedBlackTree.RB_delete(rbNodes[j]);
+		}
+		finish = high_resolution_clock::now();
+		cout << "Delete RedBlackTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
 	}
 }
