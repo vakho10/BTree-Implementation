@@ -36,6 +36,7 @@ namespace TestSuite
 			{
 				int index1 = t1->search(i)->findKey(i);
 				int index2 = t2->search(i)->findKey(i);
+				std::cout << index1 << ", " << index2 << endl;
 				Assert::AreEqual(index1, index2);
 			}
 		}

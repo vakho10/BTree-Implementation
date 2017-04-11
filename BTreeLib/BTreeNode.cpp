@@ -25,9 +25,27 @@ namespace BTreeLib
 	template<typename T, typename Compare>
 	int BTreeNode<T, Compare>::findKey(T k)
 	{
-		int idx = 0;
-		while (idx < n && cmp(keys[idx], k)) // keys[idx] < k
-			++idx;
+		//int idx = 0;
+		//while (idx < n && cmp(keys[idx], k)) // keys[idx] < k
+		//	++idx;
+
+		// Find the first key greater than or equal to k
+		int left(0), right(n - 1), middle, idx(0);
+		while (left <= right)
+		{
+			middle = (left + right) / 2;
+			if (k == keys[middle])
+			{
+				idx = middle;
+				right = middle - 1; // Goto left side and find another match
+			}
+			else
+				if (k < keys[middle])
+					right = middle - 1;
+				else
+					left = middle + 1;
+		} // End of binary search
+
 		return idx;
 	}
 
@@ -423,10 +441,27 @@ namespace BTreeLib
 	template<typename T, typename Compare>
 	BTreeNode<T, Compare> *BTreeNode<T, Compare>::search(T k)
 	{
+		// Old code (obsolete)
+		//int i = 0;
+		//while (i < n && cmp(keys[i], k)) // keys[i] < k
+		//	i++;
+
 		// Find the first key greater than or equal to k
-		int i = 0;
-		while (i < n && cmp(keys[i], k)) // k > keys[i]
-			i++;
+		int left(0), right(n - 1), middle, i(0);
+		while (left <= right)
+		{
+			middle = (left + right) / 2;
+			if (k == keys[middle])
+			{
+				i = middle;
+				right = middle - 1; // Goto left side and find another match
+			}
+			else
+				if (k < keys[middle])
+					right = middle - 1;
+				else
+					left = middle + 1;
+		} // End of binary search
 
 		// If the found key is equal to k, return this node
 		if (keys[i] == k) // keys[i] == k!
@@ -438,5 +473,9 @@ namespace BTreeLib
 
 		// Go to the appropriate child
 		return C[i]->search(k);
+		
+		
+			
+		
 	}
 }
