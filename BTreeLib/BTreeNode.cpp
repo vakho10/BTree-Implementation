@@ -30,23 +30,24 @@ namespace BTreeLib
 		//	++idx;
 
 		// Find the first key greater than or equal to k
-		int left(0), right(n - 1), middle, idx(0);
+		int left = 0, right = n - 1, middle, i = 0;
 		while (left <= right)
 		{
 			middle = (left + right) / 2;
 			if (k == keys[middle])
 			{
-				idx = middle;
+				i = middle;
 				right = middle - 1; // Goto left side and find another match
 			}
 			else
-				if (k < keys[middle])
+				if (cmp(k, keys[middle])) // k < keys[middle]
 					right = middle - 1;
-				else
+				else {
 					left = middle + 1;
-		} // End of binary search
-
-		return idx;
+					i = left;
+				}
+		}
+		return i;
 	}
 
 	// A function to remove the key k from the sub-tree rooted with this node
@@ -447,7 +448,7 @@ namespace BTreeLib
 		//	i++;
 
 		// Find the first key greater than or equal to k
-		int left(0), right(n - 1), middle, i(0);
+		int left = 0, right = n - 1, middle, i = 0;
 		while (left <= right)
 		{
 			middle = (left + right) / 2;
@@ -457,11 +458,13 @@ namespace BTreeLib
 				right = middle - 1; // Goto left side and find another match
 			}
 			else
-				if (k < keys[middle])
+				if (cmp(k, keys[middle])) // k < keys[middle]
 					right = middle - 1;
-				else
+				else {
 					left = middle + 1;
-		} // End of binary search
+					i = left;
+				}
+		}
 
 		// If the found key is equal to k, return this node
 		if (keys[i] == k) // keys[i] == k!
@@ -473,9 +476,5 @@ namespace BTreeLib
 
 		// Go to the appropriate child
 		return C[i]->search(k);
-		
-		
-			
-		
 	}
 }

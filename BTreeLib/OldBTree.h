@@ -1,31 +1,29 @@
 #pragma once
 
-#include "stdafx.h"
-
 #include <iostream>
 
 using namespace std;
 
 namespace OldTree 
 {
-	// A BTree node
-	class BTreeNode
+	// A OldBTree node
+	class OldBTreeNode
 	{
 		int *keys;  // An array of keys
 		int t;      // Minimum degree (defines the range for number of keys)
-		BTreeNode **C; // An array of child pointers
+		OldBTreeNode **C; // An array of child pointers
 		int n;     // Current number of keys
 		bool leaf; // Is true when node is leaf. Otherwise false
 
 	public:
 
-		BTreeNode(int _t, bool _leaf);   // Constructor
+		OldBTreeNode(int _t, bool _leaf);   // Constructor
 
 										 // A function to traverse all nodes in a subtree rooted with this node
 		void traverse();
 
 		// A function to search a key in subtree rooted with this node.
-		BTreeNode *search(int k);   // returns NULL if k is not present.
+		OldBTreeNode *search(int k);   // returns NULL if k is not present.
 
 									// A function that returns the index of the first key that is greater
 									// or equal to k
@@ -39,7 +37,7 @@ namespace OldTree
 		// A utility function to split the child y of this node. i is index
 		// of y in child array C[].  The Child y must be full when this
 		// function is called
-		void splitChild(int i, BTreeNode *y);
+		void splitChild(int i, OldBTreeNode *y);
 
 		// A wrapper function to remove the key k in subtree rooted with
 		// this node.
@@ -77,19 +75,19 @@ namespace OldTree
 		// the node
 		void merge(int idx);
 
-		// Make BTree friend of this so that we can access private members of
-		// this class in BTree functions
-		friend class BTree;
+		// Make OldBTree friend of this so that we can access private members of
+		// this class in OldBTree functions
+		friend class OldBTree;
 	};
 
-	class BTree
+	class OldBTree
 	{
-		BTreeNode *root; // Pointer to root node
+		OldBTreeNode *root; // Pointer to root node
 		int t;  // Minimum degree
 	public:
 
 		// Constructor (Initializes tree as empty)
-		BTree(int _t)
+		OldBTree(int _t)
 		{
 			root = NULL;
 			t = _t;
@@ -101,7 +99,7 @@ namespace OldTree
 		}
 
 		// function to search a key in this tree
-		BTreeNode* search(int k)
+		OldBTreeNode* search(int k)
 		{
 			return (root == NULL) ? NULL : root->search(k);
 		}
@@ -114,7 +112,7 @@ namespace OldTree
 
 	};
 
-	BTreeNode::BTreeNode(int t1, bool leaf1)
+	OldBTreeNode::OldBTreeNode(int t1, bool leaf1)
 	{
 		// Copy the given minimum degree and leaf property
 		t = t1;
@@ -123,7 +121,7 @@ namespace OldTree
 		// Allocate memory for maximum number of possible keys
 		// and child pointers
 		keys = new int[2 * t - 1];
-		C = new BTreeNode *[2 * t];
+		C = new OldBTreeNode *[2 * t];
 
 		// Initialize the number of keys as 0
 		n = 0;
@@ -131,7 +129,7 @@ namespace OldTree
 
 	// A utility function that returns the index of the first key that is
 	// greater than or equal to k
-	int BTreeNode::findKey(int k)
+	int OldBTreeNode::findKey(int k)
 	{
 		int idx = 0;
 		while (idx < n && keys[idx] < k)
@@ -140,7 +138,7 @@ namespace OldTree
 	}
 
 	// A function to remove the key k from the sub-tree rooted with this node
-	void BTreeNode::remove(int k)
+	void OldBTreeNode::remove(int k)
 	{
 		int idx = findKey(k);
 
@@ -187,7 +185,7 @@ namespace OldTree
 	}
 
 	// A function to remove the idx-th key from this node - which is a leaf node
-	void BTreeNode::removeFromLeaf(int idx)
+	void OldBTreeNode::removeFromLeaf(int idx)
 	{
 
 		// Move all the keys after the idx-th pos one place backward
@@ -201,7 +199,7 @@ namespace OldTree
 	}
 
 	// A function to remove the idx-th key from this node - which is a non-leaf node
-	void BTreeNode::removeFromNonLeaf(int idx)
+	void OldBTreeNode::removeFromNonLeaf(int idx)
 	{
 
 		int k = keys[idx];
@@ -242,10 +240,10 @@ namespace OldTree
 	}
 
 	// A function to get predecessor of keys[idx]
-	int BTreeNode::getPred(int idx)
+	int OldBTreeNode::getPred(int idx)
 	{
 		// Keep moving to the right most node until we reach a leaf
-		BTreeNode *cur = C[idx];
+		OldBTreeNode *cur = C[idx];
 		while (!cur->leaf)
 			cur = cur->C[cur->n];
 
@@ -253,11 +251,11 @@ namespace OldTree
 		return cur->keys[cur->n - 1];
 	}
 
-	int BTreeNode::getSucc(int idx)
+	int OldBTreeNode::getSucc(int idx)
 	{
 
 		// Keep moving the left most node starting from C[idx+1] until we reach a leaf
-		BTreeNode *cur = C[idx + 1];
+		OldBTreeNode *cur = C[idx + 1];
 		while (!cur->leaf)
 			cur = cur->C[0];
 
@@ -266,7 +264,7 @@ namespace OldTree
 	}
 
 	// A function to fill child C[idx] which has less than t-1 keys
-	void BTreeNode::fill(int idx)
+	void OldBTreeNode::fill(int idx)
 	{
 
 		// If the previous child(C[idx-1]) has more than t-1 keys, borrow a key
@@ -294,11 +292,11 @@ namespace OldTree
 
 	// A function to borrow a key from C[idx-1] and insert it
 	// into C[idx]
-	void BTreeNode::borrowFromPrev(int idx)
+	void OldBTreeNode::borrowFromPrev(int idx)
 	{
 
-		BTreeNode *child = C[idx];
-		BTreeNode *sibling = C[idx - 1];
+		OldBTreeNode *child = C[idx];
+		OldBTreeNode *sibling = C[idx - 1];
 
 		// The last key from C[idx-1] goes up to the parent and key[idx-1]
 		// from parent is inserted as the first key in C[idx]. Thus, the  loses
@@ -334,11 +332,11 @@ namespace OldTree
 
 	// A function to borrow a key from the C[idx+1] and place
 	// it in C[idx]
-	void BTreeNode::borrowFromNext(int idx)
+	void OldBTreeNode::borrowFromNext(int idx)
 	{
 
-		BTreeNode *child = C[idx];
-		BTreeNode *sibling = C[idx + 1];
+		OldBTreeNode *child = C[idx];
+		OldBTreeNode *sibling = C[idx + 1];
 
 		// keys[idx] is inserted as the last key in C[idx]
 		child->keys[(child->n)] = keys[idx];
@@ -372,10 +370,10 @@ namespace OldTree
 
 	// A function to merge C[idx] with C[idx+1]
 	// C[idx+1] is freed after merging
-	void BTreeNode::merge(int idx)
+	void OldBTreeNode::merge(int idx)
 	{
-		BTreeNode *child = C[idx];
-		BTreeNode *sibling = C[idx + 1];
+		OldBTreeNode *child = C[idx];
+		OldBTreeNode *sibling = C[idx + 1];
 
 		// Pulling a key from the current node and inserting it into (t-1)th
 		// position of C[idx]
@@ -412,13 +410,13 @@ namespace OldTree
 	}
 
 	// The main function that inserts a new key in this B-Tree
-	void BTree::insert(int k)
+	void OldBTree::insert(int k)
 	{
 		// If tree is empty
 		if (root == NULL)
 		{
 			// Allocate memory for root
-			root = new BTreeNode(t, true);
+			root = new OldBTreeNode(t, true);
 			root->keys[0] = k;  // Insert key
 			root->n = 1;  // Update number of keys in root
 		}
@@ -428,7 +426,7 @@ namespace OldTree
 			if (root->n == 2 * t - 1)
 			{
 				// Allocate memory for new root
-				BTreeNode *s = new BTreeNode(t, false);
+				OldBTreeNode *s = new OldBTreeNode(t, false);
 
 				// Make old root as child of new root
 				s->C[0] = root;
@@ -454,7 +452,7 @@ namespace OldTree
 	// A utility function to insert a new key in this node
 	// The assumption is, the node must be non-full when this
 	// function is called
-	void BTreeNode::insertNonFull(int k)
+	void OldBTreeNode::insertNonFull(int k)
 	{
 		// Initialize index as index of rightmost element
 		int i = n - 1;
@@ -499,11 +497,11 @@ namespace OldTree
 
 	// A utility function to split the child y of this node
 	// Note that y must be full when this function is called
-	void BTreeNode::splitChild(int i, BTreeNode *y)
+	void OldBTreeNode::splitChild(int i, OldBTreeNode *y)
 	{
 		// Create a new node which is going to store (t-1) keys
 		// of y
-		BTreeNode *z = new BTreeNode(y->t, y->leaf);
+		OldBTreeNode *z = new OldBTreeNode(y->t, y->leaf);
 		z->n = t - 1;
 
 		// Copy the last (t-1) keys of y to z
@@ -541,7 +539,7 @@ namespace OldTree
 	}
 
 	// Function to traverse all nodes in a subtree rooted with this node
-	void BTreeNode::traverse()
+	void OldBTreeNode::traverse()
 	{
 		// There are n keys and n+1 children, travers through n keys
 		// and first n children
@@ -561,7 +559,7 @@ namespace OldTree
 	}
 
 	// Function to search key k in subtree rooted with this node
-	BTreeNode *BTreeNode::search(int k)
+	OldBTreeNode *OldBTreeNode::search(int k)
 	{
 		// Find the first key greater than or equal to k
 		int i = 0;
@@ -580,7 +578,7 @@ namespace OldTree
 		return C[i]->search(k);
 	}
 
-	void BTree::remove(int k)
+	void OldBTree::remove(int k)
 	{
 		if (!root)
 		{
@@ -595,7 +593,7 @@ namespace OldTree
 		//  if it has a child, otherwise set root as NULL
 		if (root->n == 0)
 		{
-			BTreeNode *tmp = root;
+			OldBTreeNode *tmp = root;
 			if (root->leaf)
 				root = NULL;
 			else

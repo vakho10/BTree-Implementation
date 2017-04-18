@@ -12,17 +12,20 @@
 #include <memory>
 #include <random>
 
-#include "BTree.h"
-#include "BTree.cpp" // To fix template class separation
+#include "../BTreeLib/BTree.h"
+#include "../BTreeLib/BTree.cpp" // To fix template class separation
 
-#include "BTreeNode.h"
-#include "BTreeNode.cpp" // To fix template class separation
+#include "../BTreeLib/BTreeNode.h"
+#include "../BTreeLib/BTreeNode.cpp" // To fix template class separation
 
-#include "RB.h"
+#include "../BTreeLib/RB.h"
+
+#include "../BTreeLib/OldBTree.h"
 
 using namespace std;
 using namespace std::chrono;
 using namespace BTreeLib;
+using namespace OldTree;
 
 // Globals:
 time_point<high_resolution_clock> start, finish; // (C++11 Style) Chrono start and end time points.
@@ -146,7 +149,7 @@ void checkInsertionSearchDeletion()
 		finish = high_resolution_clock::now();
 		cout << "Delete BTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
 
-		//// RedBlackTree (delete)
+		// RedBlackTree (delete)
 		start = high_resolution_clock::now();
 		for (size_t j = 0; j < size; j++) {
 			tmpRedBlackTree.RB_delete(rbNodes[j]);

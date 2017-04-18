@@ -148,6 +148,7 @@
   <ItemGroup>
     <ClInclude Include="BTree.h" />
     <ClInclude Include="BTreeNode.h" />
+    <ClInclude Include="OldBTree.h" />
     <ClInclude Include="RB.h" />
   </ItemGroup>
   <ItemGroup>

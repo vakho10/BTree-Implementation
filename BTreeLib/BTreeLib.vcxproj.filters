@@ -24,6 +24,9 @@
     <ClInclude Include="RB.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="OldBTree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BTree.cpp">
