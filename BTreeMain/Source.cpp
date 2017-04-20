@@ -2,7 +2,7 @@
 // Template class separation workarounds described here: https://www.codeproject.com/Articles/48575/How-to-define-a-template-class-in-a-h-file-and-imp
 // For time computation we're using chrono library: http://en.cppreference.com/w/cpp/chrono
 
-#define HUNDRED_MILLION 100000000
+#define TEN_MILLION 10000000
 
 #include <iostream>
 #include <string>
@@ -11,6 +11,7 @@
 #include <cstdlib> 
 #include <memory>
 #include <random>
+#include <algorithm> // for random shuffle
 
 #include "../BTreeLib/BTree.h"
 #include "../BTreeLib/BTree.cpp" // To fix template class separation
@@ -34,14 +35,14 @@ int bestT = 100; // Has been checked previously
 Node<int>** rbNodes;
 
 // Prototypes:
-void generateAndFillRandomIntegersFromRange(int from, int to);
+void generateAndFillIntegers();
 void testAndDetermineBestT();
 void checkInsertionSearchDeletion();
 
 // MAIN
 int main()
 {
-	generateAndFillRandomIntegersFromRange(-1000, 1000); // Generate random integers (from range)
+	generateAndFillIntegers(); // Generate integers (shuffled)
 
 	//testAndDetermineBestT(); // Testing t parameter (10, 100, 1000) for BTree (1m, 10m, 100m)	
 
@@ -51,16 +52,13 @@ int main()
 	return 0;
 }
 
-void generateAndFillRandomIntegersFromRange(int from, int to)
+void generateAndFillIntegers()
 {
-	std::random_device rd;
-	std::mt19937 rng(rd());
-	std::uniform_int_distribution<int> uni(from, to);
-
-	integers = new int[HUNDRED_MILLION];
-	for (size_t i = 0; i < HUNDRED_MILLION; i++) {
-		integers[i] = uni(rng);
+	integers = new int[TEN_MILLION];
+	for (size_t i = 0; i < TEN_MILLION; i++) {
+		integers[i] = i - (TEN_MILLION / 2);
 	}
+	random_shuffle(integers, integers + TEN_MILLION);
 }
 
 void testAndDetermineBestT()
@@ -105,7 +103,7 @@ void testAndDetermineBestT()
 void checkInsertionSearchDeletion()
 {
 	cout << "Testing insertions:" << endl;
-	for (unsigned int size = 1000000; size <= HUNDRED_MILLION; size *= 10)
+	for (unsigned int size = 100000; size <= TEN_MILLION; size *= 10)
 	{
 		rbNodes = new Node<int>*[size];
 		for (size_t i = 0; i < size; i++)
