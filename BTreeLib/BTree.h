@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <string>
 #include <functional>
@@ -11,8 +11,9 @@ namespace BTreeLib
 	class BTree
 	{
 		BTreeNode<T, Compare> *root; // Pointer to root node
-		int t;  // Minimum degree
-		Compare cmp; // Custom comparator
+		int t;						// Minimum degree
+		Compare cmp;				// Custom comparator
+
 	public:
 		// Constructor (Initializes tree as empty)
 		BTree(int _t, Compare& _cmp = Compare())
