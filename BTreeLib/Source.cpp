@@ -9,17 +9,16 @@ using namespace std;
 
 int main() 
 {
-	int capacity = 8;
+	int capacity = 4;
 	CircularArray<int>* newArr = new CircularArray<int>(capacity);
 
-	for (size_t i = 1; i <= capacity; i+=2)
-	{
+	for (size_t i = 1; i <= capacity; i++)
 		newArr->insert(i);
-	}
+
+	newArr->erase(1);
+	newArr->erase(2);
+
 	newArr->insert(-1);
-	newArr->insert(2);
-	newArr->insert(-3);
-	newArr->insert(10);
 
 	for (size_t i = 0; i < newArr->arrCapacity; i++)
 	{
@@ -34,18 +33,5 @@ int main()
 	}
 	cout << "--------" << endl;
 
-	newArr->erase(1);
-	newArr->erase(-3);
-
-	for (size_t i = 0; i < newArr->arrCapacity; i++)
-	{
-		cout << newArr->keys[i];
-		if (i == newArr->positionOfFirstKey) {
-			cout << " - st";
-		}
-		if (i == (newArr->positionOfFirstKey + newArr->keysNumber) % newArr->arrCapacity - 1) {
-			cout << " - fn";
-		}
-		cout << endl;
-	}
+	
 }

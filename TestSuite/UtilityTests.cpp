@@ -56,19 +56,28 @@ namespace TestSuite
 		// Test new, circular array representation
 		TEST_METHOD(TestCircularArray) 
 		{
-			int capacity = 128;
-			CircularArray<int> newArr(capacity);
-			
-			for (size_t i = 1; i <= capacity; i++)
-			{
-				newArr.insert(i);
-			}
+			int capacity = 4;
+			CircularArray<int>* newArr = new CircularArray<int>(capacity);
 
-			for (size_t i = 0; i < newArr.keysNumber; i++)
-			{
-				cerr << newArr.keys[i] << endl;
-			}
-			
+			for (size_t i = 1; i <= capacity; i++)			
+				newArr->insert(i);
+
+			// Test insertion
+			for (int i = 0; i < capacity; i++)
+				Assert::AreEqual(i + 1, newArr->keys[i]); // [st_1, 2, 3, fn_4]
+
+			// Test positionOfFirstKey movement
+			newArr->erase(1); // [*, st_2, 3, fn_4]
+			newArr->erase(2); // [*, *, st_3, fn_4]
+			Assert::AreEqual(2, newArr->positionOfFirstKey);
+			newArr->insert(-1);
+			Assert::AreEqual(1, newArr->positionOfFirstKey); // [*, st_-1, 3, fn_4]
+
+			newArr->erase(4); // [*, st_-1, fn_3, *]
+			newArr->insert(2); // [*, st_-1, 2, fn_3]
+			Assert::AreEqual(2, newArr->keys[newArr->positionOfFirstKey + 1]); // [*, st_-1, 2, fn_4]
+			newArr->insert(1);
+			Assert::AreEqual(1, newArr->keys[newArr->positionOfFirstKey + 1]); // [st_-1, 1, 2, fn_4]
 		}
 	};
 }
