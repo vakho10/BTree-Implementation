@@ -62,6 +62,7 @@ struct CircularArray
 	void erase(T k);
 	int findIndexInKeys(T key, int st, int fin);
 	int searchInKeys(T k);
+	void print();
 };
 
 template<typename T>
@@ -169,4 +170,19 @@ inline int CircularArray<T>::searchInKeys(T k)
 		return ind;
 
 	return -1;
+}
+
+template<typename T>
+inline void CircularArray<T>::print()
+{
+	for (size_t i = 0; i < arrCapacity; i++)
+	{
+		if (i == 0) cout << "[";
+		if (i == positionOfFirstKey) cout << "st_";
+		else if (i == (positionOfFirstKey + keysNumber - 1) % arrCapacity) cout << "fn_";
+		
+		cout << keys[i];
+		if (i != arrCapacity - 1) cout << ", ";
+	}
+	cout << "]" << endl;
 }
