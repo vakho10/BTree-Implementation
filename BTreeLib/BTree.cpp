@@ -10,7 +10,7 @@ namespace BTreeLib
 		{
 			// Allocate memory for root
 			root = new BTreeNode<T, Compare>(t, true);
-			root->keys[0] = k;  // Insert key
+			root->keys[root->positionOfFirstKey] = k;  // Insert key
 			root->n = 1;  // Update number of keys in root
 		}
 		else // If tree is not empty
@@ -22,17 +22,17 @@ namespace BTreeLib
 				BTreeNode<T, Compare> *s = new BTreeNode<T, Compare>(t, false);
 
 				// Make old root as child of new root
-				s->C[0] = root;
+				s->C[s->positionOfFirstKey] = root;
 
 				// Split the old root and move 1 key to the new root
 				s->splitChild(0, root);
 
 				// New root has two children now.  Decide which of the
 				// two children is going to have new key
-				int i = 0;
-				if (cmp(s->keys[0], k)) // s->keys[0] < k
+				int i = s->positionOfFirstKey;
+				if (cmp(s->keys[s->positionOfFirstKey], k)) // s->keys[0] < k
 					i++;
-				s->C[i]->insertNonFull(k);
+				s->C[i % (s->ndCapacity + 1)]->insertNonFull(k);
 
 				// Change root
 				root = s;
@@ -62,7 +62,7 @@ namespace BTreeLib
 			if (root->leaf)
 				root = NULL;
 			else
-				root = root->C[0];
+				root = root->C[root->positionOfFirstKey];
 
 			// Free the old root
 			delete tmp;
