@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <string>
 #include <functional>
@@ -8,14 +8,21 @@ namespace BTreeLib
 	template<typename T, typename Compare = std::less<T>>
 	class BTreeNode
 	{
-		T *keys;  // An array of keys (objects)
-		int t;      // Minimum degree (defines the range for number of keys)
-		BTreeNode<T, Compare> **C; // An array of child pointers
-		int n;     // Current number of keys
-		bool leaf; // Is true when node is leaf. Otherwise false
 		Compare cmp;
+
+		bool leaf;					// Is true when node is leaf. Otherwise false
+		int t;						// Minimum degree (defines the range for number of keys)
+
+		T *keys;					// An array of keys (objects)
+		BTreeNode<T, Compare> **C;	// An array of child pointers
+
+		int positionOfFirstKey;		// კვანძში პირველი გასაღების ინდექსი 
+		int n;						// Current number of keys
+		int ndCapacity;				// კვანძში გასაღებების შესაძლო რაოდენობის მაქსიმუმი ლუწი უნდა იყოს და 2-ის ხარისხიც
+
 	public:
 		BTreeNode(int _t, bool _leaf, Compare& _cmp = Compare());   // Constructor
+		~BTreeNode();		
 
 		// A function to traverse all nodes in a subtree rooted with this node
 		void traverse();

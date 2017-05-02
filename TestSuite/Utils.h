@@ -1,9 +1,24 @@
 ﻿#pragma once
 
+#include "../BTreeLib/Helpers.h"
+
 // Utility class that contains utility functions
 class Utils
 {
 public:
+
+	static void fillArrayForTests(int startPos, int capacity, int c_size, int* keys, double* children)
+	{
+		for (int i = startPos, num = 1; i < capacity + startPos; i++, num++)
+		{
+			int keyInd = i % capacity;
+			int leftChild = modForMin(keyInd - 1, c_size);
+			int rightChild = keyInd;
+			keys[keyInd] = num;
+			children[leftChild] = num - .5;
+			children[rightChild] = num + .5;
+		}
+	}
 
 	// Function which finds key in array using while loop
 	static int findKeyUsingWhile(int k, int* arr, int size)
@@ -41,7 +56,7 @@ public:
 template<typename T>
 struct CircularArray
 {
-	T* keys = nullptr;				// Sorted array of elements
+	T* keys = nullptr;			// Sorted array of elements
 	int positionOfFirstKey;		// Index of the first key
 	int keysNumber;				// Number of keys
 	int arrCapacity;			// Maximum possible amount of keys in array (Must be EVEN and POWER OF 2)

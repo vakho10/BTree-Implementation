@@ -150,6 +150,7 @@
     <ClInclude Include="BTreeNode.h" />
     <ClInclude Include="OldBTree.h" />
     <ClInclude Include="RB.h" />
+    <ClInclude Include="Helpers.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BTree.cpp" />

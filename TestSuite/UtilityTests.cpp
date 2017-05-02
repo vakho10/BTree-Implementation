@@ -2,6 +2,7 @@
 #include "CppUnitTest.h"
 
 #include "Utils.h"
+#include "../BTreeLib/Helpers.h"
 
 #include <random>
 #include <algorithm>
@@ -51,6 +52,44 @@ namespace TestSuite
 			whileIndex = Utils::findKeyUsingWhile(-1000, arr, size);
 			binaryIndex = Utils::findKeyUsingBinary(-1000, arr, size);
 			Assert::AreEqual(whileIndex, binaryIndex);
+		}
+
+		// Test -1 on children for circular array representation
+		TEST_METHOD(TestChildrenForCircularArray)
+		{
+			// Testing minus one idea [(i - 1) mod sizeOfChilds]
+			int k_size = 5, capacity = 4;
+			int c_size = k_size + 1;
+
+			int* keys = new int[k_size];
+			double* children = new double[c_size];
+
+			/*
+				st_1     2     3     fn_4     *
+			   /    \   / \   / \   /    \   / \
+			0.5      1.5   2.5   3.5      4.5   *
+			*/
+			int startPos = 0;
+			Utils::fillArrayForTests(startPos, capacity, c_size, keys, children);
+			Assert::AreEqual(1.5, children[0]);
+			Assert::AreEqual(2.5, children[1]);
+			Assert::AreEqual(3.5, children[2]);
+			Assert::AreEqual(4.5, children[3]);
+			Assert::AreEqual(0.5, children[5]);
+
+
+
+			/*
+				Case 2:
+					[fn_3,    *,      st_1,     2]
+			     [2.5,   3.5,    1.5,     2.5,    2.5]
+			*/
+
+			/*
+				Case 3:
+					[fn_4,    *,      st_2,     st_3]
+			     [3.5,   4.5,    1.5,     2.5,    3.5]
+			*/
 		}
 
 		// Test new, circular array representation

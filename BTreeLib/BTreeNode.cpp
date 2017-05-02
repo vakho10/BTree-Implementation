@@ -9,15 +9,25 @@ namespace BTreeLib
 		t = _t;
 		leaf = _leaf;
 
-		// Allocate memory for maximum number of possible keys
-		// and child pointers
-		keys = new T[2 * t - 1];
+		// Set ndCapacity according to t parameter
+		ndCapacity = 2 * _t - 1; // FIXME should be odd and power of 2?!
+		positionOfFirstKey = 0;
+
+		// Allocate memory for maximum number of possible keys and child pointers
+		keys = (T*)malloc(sizeof(T)*(ndCapacity)); // new T[2 * t - 1];
 		C = new BTreeNode<T, Compare> *[2 * t];
 
 		// Initialize the number of keys as 0
 		n = 0;
 
 		cmp = _cmp;
+	}
+
+	template<typename T, typename Compare>
+	BTreeNode<T, Compare>::~BTreeNode()
+	{
+		free(keys);
+		keys = NULL;
 	}
 
 	// A utility function that returns the index of the first key that is
