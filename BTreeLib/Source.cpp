@@ -6,38 +6,29 @@
 
 #include <iostream>
 #include "Helpers.h"
+#include "../TestSuite/Utils.h"
 
 using namespace std;
 
 int main()
 {
 	// Testing minus one idea [(i - 1) mod size]
-	int size = 5, capacity = 4;
-	int* k1 = new int[size];
-	double* c1 = new double[size + 1];
+	int k_size = 5, c_size= k_size +1, capacity = 4;
+	int* keys = new int[k_size];
+	double* children = new double[c_size];
 
 	/*
-	  st_1       2       fn_3       *
-	/      \   /   \   /      \   /   \
- 0.5        1.5     2.5        3.5     *
+	 3     fn_4     *     st_1     2
+	/ \   /    \   / \   /    \   / \
+ <-    3.5      4.5   0.5      1.5   2.5
 	*/
-	int startPos = 0;
-	for (int i = startPos, num = 1; i < capacity + startPos; i++, num++)
-	{
-		int keyInd = i % capacity;
-		int leftChild = modForMin(keyInd - 1, size + 1);
-		int rightChild = keyInd;
-		k1[keyInd] = num;
-		c1[leftChild] = num - .5;
-		c1[rightChild] = num + .5;
-	}
-
-	for (int i = 0; i < size; i++)
-		cout << k1[i] << ", ";
+	Utils::fillArrayForTests(3, capacity, k_size, c_size, keys, children);
+	for (int i = 0; i < k_size; i++)
+		cout << keys[i] << ", ";
 	cout << endl;
 
-	for (int i = 0; i < size + 1; i++)
-		cout << c1[i] << ", ";
+	for (int i = 0; i < c_size; i++)
+		cout << children[i] << ", ";
 	cout << endl;
 
 }

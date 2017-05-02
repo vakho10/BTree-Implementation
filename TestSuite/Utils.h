@@ -7,11 +7,11 @@ class Utils
 {
 public:
 
-	static void fillArrayForTests(int startPos, int capacity, int c_size, int* keys, double* children)
+	static void fillArrayForTests(int startPos, int capacity, int k_size, int c_size, int* keys, double* children)
 	{
 		for (int i = startPos, num = 1; i < capacity + startPos; i++, num++)
 		{
-			int keyInd = i % capacity;
+			int keyInd = i % k_size;
 			int leftChild = modForMin(keyInd - 1, c_size);
 			int rightChild = keyInd;
 			keys[keyInd] = num;

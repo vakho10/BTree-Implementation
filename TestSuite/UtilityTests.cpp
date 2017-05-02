@@ -65,31 +65,52 @@ namespace TestSuite
 			double* children = new double[c_size];
 
 			/*
-				st_1     2     3     fn_4     *
-			   /    \   / \   / \   /    \   / \
-			0.5      1.5   2.5   3.5      4.5   *
+			 st_1     2     3     fn_4     *
+			/    \   / \   / \   /    \   / \
+		 0.5      1.5   2.5   3.5      4.5   *
 			*/
-			int startPos = 0;
-			Utils::fillArrayForTests(startPos, capacity, c_size, keys, children);
+			Utils::fillArrayForTests(0, capacity, k_size, c_size, keys, children);
 			Assert::AreEqual(1.5, children[0]);
 			Assert::AreEqual(2.5, children[1]);
 			Assert::AreEqual(3.5, children[2]);
 			Assert::AreEqual(4.5, children[3]);
 			Assert::AreEqual(0.5, children[5]);
-
-
+			
+			/*
+			 3     fn_4     *     st_1     2
+			/ \   /    \   / \   /    \   / \
+		 <-    3.5      4.5   0.5      1.5   2.5
+			*/
+			Utils::fillArrayForTests(3, capacity, k_size, c_size, keys, children);
+			Assert::AreEqual(3.5, children[0]);
+			Assert::AreEqual(4.5, children[1]);
+			Assert::AreEqual(0.5, children[2]);
+			Assert::AreEqual(1.5, children[3]);
+			Assert::AreEqual(2.5, children[4]);
 
 			/*
-				Case 2:
-					[fn_3,    *,      st_1,     2]
-			     [2.5,   3.5,    1.5,     2.5,    2.5]
+			fn_4     *     st_1     2     3
+		   /    \   / \   /    \   / \   / \
+		<-       4.5   0.5      1.5   2.5   3.5
 			*/
+			Utils::fillArrayForTests(2, capacity, k_size, c_size, keys, children);
+			Assert::AreEqual(4.5, children[0]);
+			Assert::AreEqual(0.5, children[1]);
+			Assert::AreEqual(1.5, children[2]);
+			Assert::AreEqual(2.5, children[3]);
+			Assert::AreEqual(3.5, children[4]);
 
 			/*
-				Case 3:
-					[fn_4,    *,      st_2,     st_3]
-			     [3.5,   4.5,    1.5,     2.5,    3.5]
+			2     3     fn_4     *     st_1
+		   / \   / \   /    \   / \   /    \
+	    <-    2.5   3.5      4.5   0.5      1.5
 			*/
+			Utils::fillArrayForTests(4, capacity, k_size, c_size, keys, children);
+			Assert::AreEqual(2.5, children[0]);
+			Assert::AreEqual(3.5, children[1]);
+			Assert::AreEqual(4.5, children[2]);
+			Assert::AreEqual(0.5, children[3]);
+			Assert::AreEqual(1.5, children[4]);
 		}
 
 		// Test new, circular array representation
