@@ -67,7 +67,7 @@ namespace TestSuite
 			/*
 			 st_1     2     3     fn_4     *
 			/    \   / \   / \   /    \   / \
-		 0.5      1.5   2.5   3.5      4.5   *
+		 <-       1.5   2.5   3.5      4.5   0.5
 			*/
 			Utils::fillArrayForTests(0, capacity, k_size, c_size, keys, children);
 			Assert::AreEqual(1.5, children[0]);
