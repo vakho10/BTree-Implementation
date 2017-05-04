@@ -1,4 +1,4 @@
-#include "BTreeNode.h"
+﻿#include "BTreeNode.h"
 
 namespace BTreeLib
 {
@@ -10,12 +10,12 @@ namespace BTreeLib
 		leaf = _leaf;
 
 		// Set ndCapacity according to t parameter
-		ndCapacity = 2 * _t - 1; // FIXME should be odd and power of 2?!
+		ndCapacity = 2 * t - 1; // FIXME should be odd and power of 2?!
 		positionOfFirstKey = 0;
 
 		// Allocate memory for maximum number of possible keys and child pointers
 		keys = (T*)malloc(sizeof(T)*(ndCapacity)); // new T[2 * t - 1];
-		C = new BTreeNode<T, Compare> *[2 * t];
+		C = new BTreeNode<T, Compare>* [2 * t];
 
 		// Initialize the number of keys as 0
 		n = 0;
@@ -337,93 +337,168 @@ namespace BTreeLib
 	}
 
 	// A utility function to insert a new key in this node
-	// The assumption is, the node must be non-full when this
-	// function is called
+	// ჩვენი დაშვებაა, რომ კვანძი არ არის სავსე ამ ფუნქციის გამოძახებისას
 	template<typename T, typename Compare>
 	void BTreeNode<T, Compare>::insertNonFull(T k)
 	{
-		// Initialize index as index of rightmost element
-		int i = n - 1;
-
-		// If this is a leaf node
+		// თუ კვანძი ფოთოლია
 		if (leaf == true)
 		{
-			// The following loop does two things
-			// a) Finds the location of new key to be inserted
-			// b) Moves all greater keys to one place ahead
-			while (i >= 0 && cmp(k, keys[i])) // keys[i] > k
+			// შემდეგი ფუნქცია ეძებს ჩასასმელ ადგილს 
+			// და ამასთანავე წევს კვანძებს საბოლოო გასაღების ჩასასმელად
+			int st = positionOfFirstKey, fin = st + n - 1;
+			int idx = find_ind_inNode(this, k, st, fin, ndCapacity);
+
+			// გადაანაცვლე ელემენტები ოპტიმალურად
+			if (idx - st >= fin - idx) // თუ ბოლოსთან ახლოსაა
 			{
-				keys[i + 1] = keys[i];
-				i--;
+				while (idx <= fin) // ზოგიერთი გასაღების გაწევა, მარჯვენა ბოლოდან დაწყებული, რომ ადგილი გავათავისუფლოთ
+				{
+					// გასაღებების გაწევა
+					keys[(fin + 1 + ndCapacity) % ndCapacity] = keys[(fin + ndCapacity) % ndCapacity];
+					--fin;
+				}
+			}
+			else // თუ თავთან უფრო ახლოა, მაშინ ელემენტების ნაწილია მარცხნივ გადმოსაწევი
+			{
+				// პირველი გასაღების პოზიცია მარცხნივ გაიწევს
+				positionOfFirstKey = (st - 1 + ndCapacity) % ndCapacity;
+
+				// გასაღები სადაც უნდა ყოფილიყო, თუ უფრო დიდი გასაღები დახვდა, მაშინ  მარცხნივ გაიწევს ინდექსი 
+				while (st <= idx)
+				{
+					// გასაღებების გაწევა
+					keys[(st - 1 + ndCapacity) % ndCapacity] = keys[st % ndCapacity];
+					++st;
+				}
 			}
 
-			// Insert the new key at found location
-			keys[i + 1] = k;
+			// ჩასვი ახალი გასაღები ნაპოვნ ადგილას
+			keys[i] = k;
 			n = n + 1;
 		}
-		else // If this node is not leaf
+		else // თუ ეს კვანძი არ არის ფოთოლი
 		{
-			// Find the child which is going to have the new key
-			while (i >= 0 && cmp(k, keys[i])) // keys[i] > k
-				i--;
-
-			// See if the found child is full
-			if (C[i + 1]->n == 2 * t - 1)
+			// იპოვე შვილი რომელშიც ჩაიწერება ჩვენი გასაღები
+			int idx = find_ind_inNode(this, k, st, fin, ndCapacity); // FIXME ეს ნახავს და პირვე
+			
+			// შეამოწმე მარჯვენა შვილის ინდექსი როგორ გამოითვლება
+			int rightChildIndex = idx + 1;
+			if ((idx % ndCapacity) < positionOfFirstKey) 
 			{
-				// If the child is full, then split it
-				splitChild(i + 1, C[i + 1]);
+				rightChildIndex = idx;
+			}			
+			rightChildIndex %= (ndCapacity + 1); // გადაიყვანე რეალურ ინდექსებში
+			
+			// ნახე თუ ნაპოვნი შვილი სავსეა (თავდაპირველი შემოწმება ჩასვლამდე)
+			if (C[rightChildIndex]->n == 2 * t - 1)
+			{
+				// თუ შვილი სავსეა, მაშინ გაყავი ის
+				splitChild(idx, C[rightChildIndex]); // TODO შეამოწმე ეს ინდექსები სწორი თუა
 
 				// After split, the middle key of C[i] goes up and
 				// C[i] is splitted into two.  See which of the two
-				// is going to have the new key
+				// is going to have the new key	
+				int childIndex = idx + 1;
+				if ((idx % ndCapacity) < positionOfFirstKey) // FIXME ნახე ეს კოდი და გადაამოწმე რომ სწორად მუშაობს ყველაფერი!
+				{
+					rightChildIndex = idx;
+				}
+				rightChildIndex %= (ndCapacity + 1); // გადაიყვანე რეალურ ინდექსებში
 				if (cmp(keys[i + 1], k)) // keys[i + 1] < k
 					i++;
 			}
-			C[i + 1]->insertNonFull(k);
+			C[rightChildIndex]->insertNonFull(k);
 		}
 	}
 
 	// A utility function to split the child y of this node
-	// Note that y must be full when this function is called
+	// შენიშვნა: y კვანძი უნდა იყოს სავსე ამ ფუნქციის გამოძახებისას
+	// აქ i არ არის რეალური ინდექსი (i % capacity არის რეალური)
 	template<typename T, typename Compare>
 	void BTreeNode<T, Compare>::splitChild(int i, BTreeNode<T, Compare> *y)
 	{
-		// Create a new node which is going to store (t-1) keys
-		// of y
+		// ახალი კვანძი რომელიც შეინახავს y-ის (t-1) გასაღებს
 		BTreeNode<T, Compare> *z = new BTreeNode<T, Compare>(y->t, y->leaf);
 		z->n = t - 1;
-
-		// Copy the last (t-1) keys of y to z
+		z->positionOfFirstKey = 0; // Z-ს აქვს უბრალო ინდექსირება (რადგანაც ახალი შექმნილია)
+				
+		// დააკოპირე ბოლო (t-1) გასაღებები y-დან z-ში
 		for (int j = 0; j < t - 1; j++)
-			z->keys[j] = y->keys[j + t];
+			z->keys[j] = y->keys[(j + t + y->positionOfFirstKey) % y->ndCapacity];
 
-		// Copy the last t children of y to z
+		// დააფოპირე ბოლო t ცალი y-ის შვილი z-ში
 		if (y->leaf == false)
 		{
 			for (int j = 0; j < t; j++)
-				z->C[j] = y->C[j + t];
+			{
+				// გამოითვალე y-ს ბოლო t შვილების ინდექსები
+				int ind = y->positionOfFirstKey + j + t;
+				if (ind >= ndCapacity + 1) ind %= (ndCapacity + 1); // შეასწორე ინდექსი თუ შვილების ზომას ცდება!				
+				z->C[j] = y->C[ind];
+			}
 		}
 
-		// Reduce the number of keys in y
+		// ზედა დაკოპირებების შემდეგ
+		// ვამცირებთ გასაღებების რაოდენობას y-ში
 		y->n = t - 1;
 
-		// Since this node is going to have a new child,
-		// create space of new child
-		for (int j = n; j >= i + 1; j--)
-			C[j + 1] = C[j];
+		// ახლა, y-ის (თავდაპირველად) შუა გასაღები მიმდინარე კვანძის i-ურ პოზიციაზე მოთავსდება 
+		// აუცილებელია წაძვრების გაკეთება (ოპტიმალურად)
 
-		// Link the new child to this node
-		C[i + 1] = z;
+		// ვარკვევთ თუ რომელ ბოლოსთან უფრო ახლოსაა ჩასამატებელი ადგილის ინდექსი
+		int st = positionOfFirstKey;
+		int fin = st + n - 1;
 
-		// A key of y will move to this node. Find location of
-		// new key and move all greater keys one space ahead
-		for (int j = n - 1; j >= i; j--)
-			keys[j + 1] = keys[j];
+		// ვარკვევთ თუ რომელ ბოლოსთან უფრო ახლოსაა ჩასამატებელი ადგილის ინდექსი
 
-		// Copy the middle key of y to this node
-		keys[i] = y->keys[t - 1];
+		if (i - st >= fin - i) // თუ ბოლოსთან ახლოსაა
+		{
+			// ზოგიერთი გასაღების გაწევა, მარჯვენა ბოლოდან დაწყებული, რომ ადგილი გავათავისუფლოთ
+			while (i <= fin)
+			{
+				// გასაღებების გაწევა
+				keys[(fin + 1 + ndCapacity) % ndCapacity] = keys[(fin + ndCapacity) % ndCapacity];
 
-		// Increment count of keys in this node
+				// მიმდინარე კვანძი სავსე არაა, ე.ი. ბოლოს მარჯვნივ ყოველთვის იქნება ერთი ადგილი მაინც
+				
+				// შვილების წაძვრა
+				C[(fin + 2 + (ndCapacity + 1)) % (ndCapacity + 1)] = C[(fin + 1 + (ndCapacity + 1)) % (ndCapacity + 1)];
+				
+				--fin;
+			}			
+		}
+		else // თუ თავთან უფრო ახლოა, მაშინ ელემენტების ნაწილია მარცხნივ გადმოსაწევი
+		{
+			// პირველი გასაღების პოზიცია მარცხნივ გაიწევს
+			positionOfFirstKey = (st - 1 + ndCapacity) % ndCapacity;
+
+			// გასაღები სადაც უნდა ყოფილიყო, თუ უფრო დიდი გასაღები დახვდა, მაშინ  მარცხნივ გაიწევს ინდექსი 
+			while (st <= i)
+			{
+				// გასაღებების გაწევა
+				keys[(st - 1 + ndCapacity) % ndCapacity] = keys[st % ndCapacity];
+			
+				// შვილების წაძვრა			
+				C[(st - 1 + (ndCapacity + 1)) % (ndCapacity + 1)] = C[st % (ndCapacity + 1)];
+				
+				++st;
+			}
+		}
+
+		// დააკოპირე y-ის შუა გასაღები მიმდინარეს i-ურში
+		keys[i % ndCapacity] = y->keys[(y->positionOfFirstKey + t - 1) % y->ndCapacity];
+
+		// გახადე z კვანძი i-ს მარჯვენა შვილი		
+		if (i % ndCapacity < st) // ჩვენი შვილების ლოგიკის შემოწმება პოზიციის დასადგენად!
+		{
+			C[i] = z; // მიმდინარე გამოდის მარჯვენა შვილი
+		}
+		else { // თუ არადა (i+1)-ე გამოდის მარჯვენა შვილი
+			C[i + 1] = z;
+		}
+
+		// გაზარდე გასაღებების რიცხვი მიმდინარე კვანძში
 		n = n + 1;
 	}
 

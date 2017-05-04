@@ -22,7 +22,15 @@ namespace BTreeLib
 
 	public:
 		BTreeNode(int _t, bool _leaf, Compare& _cmp = Compare());   // Constructor
-		~BTreeNode();		
+		~BTreeNode();	
+
+		// დამხმარე ფუნქცია რომელიც ეძებს ჩასასმელი რიცხვის ადგილს
+		int find_ind_inNode(BTreeNode<T, Compare> *x, T k, int st, int fin, int ndCapacity)
+		{
+			if (st == fin) return st;
+			int middle = (st + fin) / 2;
+			if (k > x->keys[middle % ndCapacity])  return find_ind_inNode(x, k, middle + 1, fin, ndCapacity);
+		}
 
 		// A function to traverse all nodes in a subtree rooted with this node
 		void traverse();

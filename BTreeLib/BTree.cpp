@@ -1,43 +1,43 @@
-#include "BTree.h"
+﻿#include "BTree.h"
 
 namespace BTreeLib
 {
 	template<typename T, typename Compare>
 	void BTree<T, Compare>::insert(T k)
 	{
-		// If tree is empty
+		// თუ ხე ცარიელია
 		if (root == NULL)
 		{
-			// Allocate memory for root
+			// მეხსიერების გამოყოფა ფესვისთვის
 			root = new BTreeNode<T, Compare>(t, true);
-			root->keys[0] = k;  // Insert key
-			root->n = 1;  // Update number of keys in root
+			root->keys[root->positionOfFirstKey] = k;  // გასაღების ჩასმა (0 ინდექსზე)
+			root->n = 1;  // გასაღებების რაოდენობის განახლება
 		}
-		else // If tree is not empty
+		else // თუ ხე არ არის ცარიელი
 		{
-			// If root is full, then tree grows in height
+			// თუ ფესვი სავსეა, მაშინ ხე იზრდება სიმაღლეში
 			if (root->n == 2 * t - 1)
 			{
-				// Allocate memory for new root
+				// გამოვყოფთ მეხსიერებას ახალი ფესვისთვის
 				BTreeNode<T, Compare> *s = new BTreeNode<T, Compare>(t, false);
 
-				// Make old root as child of new root
+				// გახადე ძველი ფესვი ახალი ფესვის, s-ის შვილი
 				s->C[0] = root;
 
-				// Split the old root and move 1 key to the new root
+				// გაყავი ძველი ფესვი და გადაიტანე 1 გასაღები ახალ ფესვში
 				s->splitChild(0, root);
 
-				// New root has two children now.  Decide which of the
-				// two children is going to have new key
-				int i = 0;
-				if (cmp(s->keys[0], k)) // s->keys[0] < k
+				// ახალ ფესვს ახლა ორი შვილი ჰყავს. გადაწყვიტე 
+				// ამ ორიდან რომელს ექნება ახალი გასაღები
+				int i = s->positionOfFirstKey;
+				if (cmp(s->keys[i], k)) // s->keys[0] < k
 					i++;
 				s->C[i]->insertNonFull(k);
 
-				// Change root
+				// ვცვლით ფესვს ახლით
 				root = s;
 			}
-			else  // If root is not full, call insertNonFull for root
+			else  // თუ ფესვი არ არის სავსე, მაშინ დაუძახე insertNonFull ფუნქციას ფესვისთვის
 				root->insertNonFull(k);
 		}
 	}

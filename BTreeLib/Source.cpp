@@ -13,22 +13,18 @@ using namespace std;
 int main()
 {
 	// Testing minus one idea [(i - 1) mod size]
-	int k_size = 5, c_size= k_size +1, capacity = 4;
-	int* keys = new int[k_size];
-	double* children = new double[c_size];
-
-	/*
-	 3     fn_4     *     st_1     2
-	/ \   /    \   / \   /    \   / \
- <-    3.5      4.5   0.5      1.5   2.5
-	*/
-	Utils::fillArrayForTests(3, capacity, k_size, c_size, keys, children);
-	for (int i = 0; i < k_size; i++)
+	int size = 4, capacity = 6;
+	int* keys = new int[capacity] { 4, 6, -10, -10, 4, 4 };
+	int st = 4;
+	int fin = st + size - 1;
+	// 3, fn_4, *, st_1, 2,
+	
+	
+	for (int i = 0; i < capacity; i++)
 		cout << keys[i] << ", ";
 	cout << endl;
-
-	for (int i = 0; i < c_size; i++)
-		cout << children[i] << ", ";
-	cout << endl;
+		
+	int index = Utils::find_ind_inNode(keys, 4, st, fin, capacity);
+	cout << "Index is " << index << endl;
 
 }

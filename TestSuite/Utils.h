@@ -7,17 +7,42 @@ class Utils
 {
 public:
 
-	static void fillArrayForTests(int startPos, int capacity, int k_size, int c_size, int* keys, double* children)
+	// Function which finds and returns index of key or where it should be
+	static int find_ind_inNode(int* x, int k, int st, int fin, int ndCapacity)
 	{
-		for (int i = startPos, num = 1; i < capacity + startPos; i++, num++)
+		if (st == fin) return st;
+		int middle = (st + fin) / 2;
+		if (k > x[middle % ndCapacity])  return find_ind_inNode(x, k, middle + 1, fin, ndCapacity);
+		return find_ind_inNode(x, k, st, middle, ndCapacity);
+
+		/*int left = st;
+		int right = st + size - 1;
+		int middle;
+		int i = 0;
+		while (left <= right)
 		{
-			int keyInd = i % k_size;
-			int leftChild = modForMin(keyInd - 1, c_size);
-			int rightChild = keyInd;
-			keys[keyInd] = num;
-			children[leftChild] = num - .5;
-			children[rightChild] = num + .5;
+			middle = (left + right) / 2;
+			if (k == keys[middle % capacity])
+			{
+				i = middle;
+				right = middle - 1;
+			}
+			else
+				if (k < keys[middle % capacity]) {
+					right = middle - 1;	
+					i = right;
+				}
+				else {
+					left = middle + 1;
+					i = left;
+				}
 		}
+		return i % capacity;*/
+
+		/*if (st == fin) return st;
+		int middle = (st + fin) / 2;
+		if (k > x->key[middle % ndCapacity])  return find_ind_inNode(x, k, middle + 1, fin);
+		return find_ind_inNode(x, k, st, middle);*/
 	}
 
 	// Function which finds key in array using while loop
