@@ -349,6 +349,10 @@ namespace BTreeLib
 			int st = positionOfFirstKey, fin = st + n - 1;
 			int idx = find_ind_inNode(this, k, st, fin, ndCapacity);
 
+			// თუ დიაპაზონშია გააკეთ შესწორება კერძოდ თუ არსებულზე მეტია მარჯვნივ გადაინაცვლოს ჩასასმელმა ადგილმა
+			if (idx >= st && idx <= fin && keys[idx % ndCapacity] < k)
+				++idx;
+
 			// გადაანაცვლე ელემენტები ოპტიმალურად
 			if (idx - st >= fin - idx) // თუ ბოლოსთან ახლოსაა
 			{
@@ -383,28 +387,55 @@ namespace BTreeLib
 			int st = positionOfFirstKey, fin = st + n - 1;
 			int idx = find_ind_inNode(this, k, st, fin, ndCapacity); // FIXME ეს ნახავს და ერთნაირებს შორის ყველაზე მარცხენას აიღებს და არა ბოლოს!
 			
-			// შეამოწმე მარჯვენა შვილის ინდექსი როგორ გამოითვლება
-			int rightChildIndex = idx;
-			if ((idx % ndCapacity) < positionOfFirstKey) 
-				rightChildIndex = idx - 1;
-					
-			rightChildIndex %= (ndCapacity + 1); // გადაიყვანე რეალურ ინდექსებში
-			
-			int childIndex = rightChildIndex; // შვილის ინდექსი სადაც ჩასმა მოხდება
-
-			// ნახე თუ ნაპოვნი შვილი სავსეა (თავდაპირველი შემოწმება ჩასვლამდე)
-			if (C[rightChildIndex]->n == 2 * t - 1)
+			int childToCheck;
+			if (idx < st) 
+				childToCheck = idx + 1; // შესამოწმებელია სტარტის მარცხენა შვილი
+			else if (idx > fin) 
+				childToCheck = idx; // შესამოწმებელია ფინიშის მარჯვენა შვილი
+			else
 			{
-				// თუ შვილი სავსეა, მაშინ გაყავი ის
-				splitChild(idx, C[rightChildIndex]); 
+				// თუ k არის მიმდინარეზე მეტი (ან ტოლი), მაშინ მიმდინარეს მარჯვენა შვილი 
+				// უნდა განვიხოლოთ FIXME ტოლი ტუა სად უნდა წავიდეს? მემგონი არ აქვს მნიშვნელობა :დ
+				if (keys[idx] <= k) 
+					childToCheck = idx + 1;
+				else
+					// თუ k არის მიმდინარეზე ნაკლები, მაშინ მიმდინარეს მარცხენა შვილი უნდა განვიხილოთ
+					childToCheck = idx;
+			}
+			
+			// შეამოწმე შვილის ინდექსი როგორ გამოითვლება!
+			// თუ "რეალური idx" ნაკლებია სტარტზე მაშინ შეამცირე ერთით
+			if (((idx + ndCapacity) % ndCapacity) < positionOfFirstKey)  
+				--childToCheck;
+				
+			int childIndex = (childToCheck + ndCapacity + 1) % (ndCapacity + 1); // შვილის ინდექსი სადაც ჩასმა მოხდება
+			
+			// ნახე თუ ნაპოვნი შვილი სავსეა (თავდაპირველი შემოწმება ჩასვლამდე)
+			if (C[childIndex]->n == 2 * t - 1)
+			{
+				// ინდექსის კორექტირება საზღვრის დარღვევის დროს (ან -1 არის ან fin-ზე მეტი)
+				if (idx < st)
+					++idx; // შესამოწმებელია სტარტის მარცხენა შვილი
+				//else if (idx > fin)
+				//	--idx; // შესამოწმებელია ფინიშის მარჯვენა შვილი
+
+				// თუ შვილი სავსეა, მაშინ გაყავი ის!
+				splitChild(idx, C[childIndex]);
 
 				// After split, the middle key of C[i] goes up and
 				// C[i] is splitted into two.  See which of the two
 				// is going to have the new key	
+				childIndex = idx; // ცვლადის ხელახლა გამოყენება
+				if (((idx + ndCapacity) % ndCapacity) < positionOfFirstKey)
+					childIndex--;
+
 				if (cmp(keys[idx % ndCapacity], k)) // keys[i + 1] < k მიმდინარე
-					childIndex += 1; // მაშინ მარჯვენა შვილში უნდა ჩაწეროს
+					childIndex++; // მაშინ მარჯვენა შვილში უნდა ჩაწეროს
+				
+				// შვილის ინდექსის კორექტირება
+				childIndex = (childIndex + (ndCapacity + 1)) % (ndCapacity + 1);
 			}
-			C[childIndex % (ndCapacity + 1)]->insertNonFull(k);
+			C[childIndex]->insertNonFull(k);
 		}
 	}
 
@@ -441,12 +472,10 @@ namespace BTreeLib
 
 		// ახლა, y-ის (თავდაპირველად) შუა გასაღები მიმდინარე კვანძის i-ურ პოზიციაზე მოთავსდება 
 		// აუცილებელია წაძვრების გაკეთება (ოპტიმალურად)
-
+		
 		// ვარკვევთ თუ რომელ ბოლოსთან უფრო ახლოსაა ჩასამატებელი ადგილის ინდექსი
 		int st = positionOfFirstKey;
-		int fin = st + n - 1;
-
-		// ვარკვევთ თუ რომელ ბოლოსთან უფრო ახლოსაა ჩასამატებელი ადგილის ინდექსი
+		int fin = st + n - 1;		
 
 		if (i - st >= fin - i) // თუ ბოლოსთან ახლოსაა
 		{

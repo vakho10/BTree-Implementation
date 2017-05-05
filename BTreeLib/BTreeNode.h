@@ -35,13 +35,13 @@ namespace BTreeLib
 			while (st <= fin)
 			{
 				md = (st + fin) / 2;
-				if (k == keys[md])
+				if (k == keys[md % ndCapacity])
 				{
 					i = md;
 					fin = md - 1; // Goto left side and find another match
 				}
 				else
-					if (cmp(k, keys[md])) // k < keys[middle]
+					if (cmp(k, keys[md % ndCapacity])) // k < keys[middle]
 					{
 						fin = md - 1;
 						i = fin;
@@ -51,6 +51,7 @@ namespace BTreeLib
 						i = st;
 					}
 			}
+			//if (i < 0) i += ndCapacity;
 			return i;
 			//// თუ ერთელემენტეიანიას შემთხვევა
 			//if (x->n == 1) return x->keys[x->positionOfFirstKey] < k ? x->positionOfFirstKey + 1 : x->positionOfFirstKey;
