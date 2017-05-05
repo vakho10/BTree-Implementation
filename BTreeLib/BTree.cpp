@@ -10,9 +10,9 @@ namespace BTreeLib
 		{
 			// მეხსიერების გამოყოფა ფესვისთვის
 			root = new BTreeNode<T, Compare>(t, true);
-			root->keys[(2 * t - 1) / 2] = k;  // გასაღების ჩასმა (0 ინდექსზე)
+			root->keys[0] = k;  // გასაღების ჩასმა (0 ინდექსზე)
 			root->n = 1;  // გასაღებების რაოდენობის განახლება
-			root->positionOfFirstKey = 2;
+			root->positionOfFirstKey = 0;
 		}
 		else // თუ ხე არ არის ცარიელი
 		{
