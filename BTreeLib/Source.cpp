@@ -6,25 +6,36 @@
 
 #include <iostream>
 #include "Helpers.h"
-#include "../TestSuite/Utils.h"
+
+#include "../BTreeLib/OldBTree.h"
+
+#include "../BTreeLib/BTree.h"
+#include "../BTreeLib/BTree.cpp" // To fix template class separation
+
+#include "../BTreeLib/BTreeNode.h"
+#include "../BTreeLib/BTreeNode.cpp" // To fix template class separation
 
 using namespace std;
+using namespace OldTree;
+using namespace BTreeLib;
 
 int main()
 {
-	// Testing minus one idea [(i - 1) mod size]
-	int size = 4, capacity = 6;
-	int* keys = new int[capacity] { 4, 6, -10, -10, 4, 4 };
-	int st = 4;
-	int fin = st + size - 1;
-	// 3, fn_4, *, st_1, 2,
-	
-	
-	for (int i = 0; i < capacity; i++)
-		cout << keys[i] << ", ";
-	cout << endl;
-		
-	int index = Utils::find_ind_inNode(keys, 4, st, fin, capacity);
-	cout << "Index is " << index << endl;
+	OldBTree* t1 = new OldBTree(3);
+	BTree<int>* t2 = new BTree<int>(3);
 
+	// Fill trees with test data before tests
+	for (int i = 1; i <= 10; i++)
+	{
+		t1->insert(i);
+		t2->insert(i);
+	}	
+
+	// Test if both versions get the same results when searching keys
+	for (int i = 1; i <= 10; i++)
+	{
+		int index1 = t1->search(i)->findKey(i);
+		int index2 = t2->search(i)->findKey(i);
+		cout << "ind1: " << index1 << ", ind2: " << index2 << endl;
+	}
 }

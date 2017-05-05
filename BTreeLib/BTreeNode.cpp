@@ -374,41 +374,37 @@ namespace BTreeLib
 			}
 
 			// ჩასვი ახალი გასაღები ნაპოვნ ადგილას
-			keys[i] = k;
+			keys[idx % ndCapacity] = k;
 			n = n + 1;
 		}
 		else // თუ ეს კვანძი არ არის ფოთოლი
 		{
 			// იპოვე შვილი რომელშიც ჩაიწერება ჩვენი გასაღები
-			int idx = find_ind_inNode(this, k, st, fin, ndCapacity); // FIXME ეს ნახავს და პირვე
+			int st = positionOfFirstKey, fin = st + n - 1;
+			int idx = find_ind_inNode(this, k, st, fin, ndCapacity); // FIXME ეს ნახავს და ერთნაირებს შორის ყველაზე მარცხენას აიღებს და არა ბოლოს!
 			
 			// შეამოწმე მარჯვენა შვილის ინდექსი როგორ გამოითვლება
-			int rightChildIndex = idx + 1;
+			int rightChildIndex = idx;
 			if ((idx % ndCapacity) < positionOfFirstKey) 
-			{
-				rightChildIndex = idx;
-			}			
+				rightChildIndex = idx - 1;
+					
 			rightChildIndex %= (ndCapacity + 1); // გადაიყვანე რეალურ ინდექსებში
 			
+			int childIndex = rightChildIndex; // შვილის ინდექსი სადაც ჩასმა მოხდება
+
 			// ნახე თუ ნაპოვნი შვილი სავსეა (თავდაპირველი შემოწმება ჩასვლამდე)
 			if (C[rightChildIndex]->n == 2 * t - 1)
 			{
 				// თუ შვილი სავსეა, მაშინ გაყავი ის
-				splitChild(idx, C[rightChildIndex]); // TODO შეამოწმე ეს ინდექსები სწორი თუა
+				splitChild(idx, C[rightChildIndex]); 
 
 				// After split, the middle key of C[i] goes up and
 				// C[i] is splitted into two.  See which of the two
 				// is going to have the new key	
-				int childIndex = idx + 1;
-				if ((idx % ndCapacity) < positionOfFirstKey) // FIXME ნახე ეს კოდი და გადაამოწმე რომ სწორად მუშაობს ყველაფერი!
-				{
-					rightChildIndex = idx;
-				}
-				rightChildIndex %= (ndCapacity + 1); // გადაიყვანე რეალურ ინდექსებში
-				if (cmp(keys[i + 1], k)) // keys[i + 1] < k
-					i++;
+				if (cmp(keys[idx % ndCapacity], k)) // keys[i + 1] < k მიმდინარე
+					childIndex += 1; // მაშინ მარჯვენა შვილში უნდა ჩაწეროს
 			}
-			C[rightChildIndex]->insertNonFull(k);
+			C[childIndex % (ndCapacity + 1)]->insertNonFull(k);
 		}
 	}
 

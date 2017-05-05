@@ -37,7 +37,7 @@ namespace TestSuite
 		TEST_METHOD(TestSearch)
 		{
 			for (int i = 1; i <= 10; i++)
-			{
+			{				
 				int index1 = t1->search(i)->findKey(i);
 				int index2 = t2->search(i)->findKey(i);
 				Assert::AreEqual(index1, index2);

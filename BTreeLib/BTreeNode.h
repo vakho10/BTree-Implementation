@@ -24,12 +24,40 @@ namespace BTreeLib
 		BTreeNode(int _t, bool _leaf, Compare& _cmp = Compare());   // Constructor
 		~BTreeNode();	
 
+		int getPositionOfFirstKey() {
+			return positionOfFirstKey;
+		}
+
 		// დამხმარე ფუნქცია რომელიც ეძებს ჩასასმელი რიცხვის ადგილს
 		int find_ind_inNode(BTreeNode<T, Compare> *x, T k, int st, int fin, int ndCapacity)
 		{
-			if (st == fin) return st;
-			int middle = (st + fin) / 2;
-			if (k > x->keys[middle % ndCapacity])  return find_ind_inNode(x, k, middle + 1, fin, ndCapacity);
+			int md, i = st;
+			while (st <= fin)
+			{
+				md = (st + fin) / 2;
+				if (k == keys[md])
+				{
+					i = md;
+					fin = md - 1; // Goto left side and find another match
+				}
+				else
+					if (cmp(k, keys[md])) // k < keys[middle]
+					{
+						fin = md - 1;
+						i = fin;
+					}
+					else {
+						st = md + 1;
+						i = st;
+					}
+			}
+			return i;
+			//// თუ ერთელემენტეიანიას შემთხვევა
+			//if (x->n == 1) return x->keys[x->positionOfFirstKey] < k ? x->positionOfFirstKey + 1 : x->positionOfFirstKey;
+			//
+			//if (st == fin) return st;
+			//int middle = (st + fin) / 2;
+			//if (k > x->keys[middle % ndCapacity])  return find_ind_inNode(x, k, middle + 1, fin, ndCapacity);
 		}
 
 		// A function to traverse all nodes in a subtree rooted with this node
