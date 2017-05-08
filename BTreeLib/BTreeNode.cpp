@@ -420,7 +420,7 @@ namespace BTreeLib
 		// ზედა დაკოპირებების შემდეგ ვამცირებთ გასაღებების რაოდენობას y-ში
 		// ასევე დასაწყისის ინდექსი იცვლება
 		y->n = t - 1;
-		y->positionOfFirstKey = (y->positionOfFirstKey + t + 1) % y->ndCapacity;
+		y->positionOfFirstKey = (y->positionOfFirstKey + t) % y->ndCapacity;
 		// სავსე რადგან იყო ე. ი. სათადარიგოში რაღაც გვაქვს. გადავიტანოთ სათადარიგოდან რეალურში
 		y->C[(y->positionOfFirstKey + y->n - 1) % ndCapacity] = y->c_last;
 		

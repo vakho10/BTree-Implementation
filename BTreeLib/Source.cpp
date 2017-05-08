@@ -33,6 +33,8 @@ int main()
 	t2->insert(-2);
 	t2->insert(3);
 
+	t2->traverse();
+
 	//int k = 10;
 	//int* keys = new int[3] { 12, 15, 16 };
 	//int md, i = 0, st = 0, fin = 3;
