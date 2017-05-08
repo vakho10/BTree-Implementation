@@ -30,8 +30,8 @@ namespace BTreeLib
 
 				// ახალ ფესვს ახლა ორი შვილი ჰყავს. გადაწყვიტე 
 				// ამ ორიდან რომელს ექნება ახალი გასაღები
-				int i = s->positionOfFirstKey;
-				if (cmp(s->keys[i], k)) // s->keys[0] < k
+				int i = 0;
+				if (cmp(s->keys[0], k)) // s->keys[0] < k
 					i++;
 				s->C[i]->insertNonFull(k);
 

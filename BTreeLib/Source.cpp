@@ -25,14 +25,7 @@ int main()
 	BTree<int>* t2 = new BTree<int>(3);
 
 	// Fill trees with test data before tests
-	for (int i = -20; i <= -400; i-=2)
-	{
-		t1->insert(i);
-		t2->insert(i);
-	}
-
-	for (int i = -1; i <= 400; i += 2)
-	{
+	for (int i = 2; i <= 10; i+=2)	{
 		t1->insert(i);
 		t2->insert(i);
 	}

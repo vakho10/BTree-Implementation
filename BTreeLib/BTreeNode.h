@@ -13,53 +13,17 @@ namespace BTreeLib
 		bool leaf;					// Is true when node is leaf. Otherwise false
 		int t;						// Minimum degree (defines the range for number of keys)
 
-		T *keys;					// An array of keys (objects)
-		BTreeNode<T, Compare> **C;	// An array of child pointers
+		T *keys;							  // An array of keys (objects)
+		BTreeNode<T, Compare> **C;			  // შვილებიზე მიმთითებლების მასივი (გასაღებების რაოდენობის ტოლი)
+		BTreeNode<T, Compare>* c_last = NULL; // ბოლოს კვანძის მარჯვენა შვილი (მაშინ ვიყენებთ როდესაც კვანძი სავსეა)
 
-		int positionOfFirstKey;		// კვანძში პირველი გასაღების ინდექსი 
+		int positionOfFirstKey;		// კვანძში პირველი გასაღების ინდექსი
 		int n;						// Current number of keys
 		int ndCapacity;				// კვანძში გასაღებების შესაძლო რაოდენობის მაქსიმუმი ლუწი უნდა იყოს და 2-ის ხარისხიც
 
 	public:
 		BTreeNode(int _t, bool _leaf, Compare& _cmp = Compare());   // Constructor
 		~BTreeNode();	
-
-		int getPositionOfFirstKey() {
-			return positionOfFirstKey;
-		}
-
-		// დამხმარე ფუნქცია რომელიც ეძებს ჩასასმელი რიცხვის ადგილს
-		int find_ind_inNode(BTreeNode<T, Compare> *x, T k, int st, int fin, int ndCapacity)
-		{
-			int md, i = st;
-			while (st <= fin)
-			{
-				md = (st + fin) / 2;
-				if (k == keys[md % ndCapacity])
-				{
-					i = md;
-					fin = md - 1; // Goto left side and find another match
-				}
-				else
-					if (cmp(k, keys[md % ndCapacity])) // k < keys[middle]
-					{
-						fin = md - 1;
-						i = fin;
-					}
-					else {
-						st = md + 1;
-						i = st;
-					}
-			}
-			//if (i < 0) i += ndCapacity;
-			return i;
-			//// თუ ერთელემენტეიანიას შემთხვევა
-			//if (x->n == 1) return x->keys[x->positionOfFirstKey] < k ? x->positionOfFirstKey + 1 : x->positionOfFirstKey;
-			//
-			//if (st == fin) return st;
-			//int middle = (st + fin) / 2;
-			//if (k > x->keys[middle % ndCapacity])  return find_ind_inNode(x, k, middle + 1, fin, ndCapacity);
-		}
 
 		// A function to traverse all nodes in a subtree rooted with this node
 		void traverse();
