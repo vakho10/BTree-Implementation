@@ -62,8 +62,10 @@ int main()
 	for (int i = 1; i <= 10; i++)
 	{
 		int index1 = t1->search(i)->findKey(i);
-		int index2 = t2->search(i)->findKey(i);
-		cout << index1 << ", " << index2 << endl;
+		
+		auto node = t2->search(i);
+		int index2 = node->findKey(i);
+		cout << index1 << ", " << index2 - node->getPositionOfFirstKey() << endl;
 	}
 
 

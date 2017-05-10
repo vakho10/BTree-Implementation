@@ -26,7 +26,13 @@ namespace TestSuite
 		// Fill trees with test data before tests
 		BTreeTests()
 		{
-			for (int i = 1; i <= 10; i++)
+			for (int i = 2; i <= 20; i+=2)
+			{
+				t1->insert(i);
+				t2->insert(i);				
+			}
+
+			for (int i = 1; i <= 20; i+=2)
 			{
 				t1->insert(i);
 				t2->insert(i);
@@ -36,10 +42,12 @@ namespace TestSuite
 		// Test if both versions get the same results when searching keys
 		TEST_METHOD(TestSearch)
 		{
-			for (int i = 1; i <= 10; i++)
+			for (int i = 1; i <= 20; i++)
 			{				
 				int index1 = t1->search(i)->findKey(i);
-				int index2 = t2->search(i)->findKey(i);
+
+				auto node = t2->search(i);
+				int index2 = node->findKey(i) - node->getPositionOfFirstKey(); // reseting to zero position
 				Assert::AreEqual(index1, index2);
 			}
 		}

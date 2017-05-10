@@ -25,6 +25,8 @@ namespace BTreeLib
 		BTreeNode(int _t, bool _leaf, Compare& _cmp = Compare());   // Constructor
 		~BTreeNode();	
 
+		int getPositionOfFirstKey() { return positionOfFirstKey; }
+
 		// A function to traverse all nodes in a subtree rooted with this node
 		void traverse();
 

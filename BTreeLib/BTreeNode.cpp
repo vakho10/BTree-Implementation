@@ -35,32 +35,32 @@ namespace BTreeLib
 	template<typename T, typename Compare>
 	int BTreeNode<T, Compare>::findKey(T k)
 	{
-		//int idx = 0;
-		//while (idx < n && cmp(keys[idx], k)) // keys[idx] < k
-		//	++idx;
+		int idx = positionOfFirstKey;
+		while (idx < n + positionOfFirstKey && cmp(keys[idx % ndCapacity], k)) // keys[idx] < k
+			++idx;
 
-		// Find the first key greater than or equal to k
-		int left = positionOfFirstKey, right = positionOfFirstKey + n - 1, middle, i = 0;
-		while (left <= right)
-		{
-			middle = (left + right) / 2;
-			if (k == keys[middle % ndCapacity])
-			{
-				i = middle;
-				right = middle - 1;
-				break;
-			}
-			else
-				if (k < keys[middle % ndCapacity]) {
-					i = middle;
-					right = middle - 1;
-				}
-				else {
-					left = middle + 1;
-					i = left;
-				}
-		}
-		return i;
+		//// Find the first key greater than or equal to k
+		//int left = positionOfFirstKey, right = positionOfFirstKey + n - 1, middle, i = 0;
+		//while (left <= right)
+		//{
+		//	middle = (left + right) / 2;
+		//	if (k == keys[middle % ndCapacity])
+		//	{
+		//		i = middle;
+		//		right = middle - 1;
+		//		break;
+		//	}
+		//	else
+		//		if (k < keys[middle % ndCapacity]) {
+		//			i = middle;
+		//			right = middle - 1;
+		//		}
+		//		else {
+		//			left = middle + 1;
+		//			i = left;
+		//		}
+		//}
+		return idx;
 	}
 
 	// A function to remove the key k from the sub-tree rooted with this node
@@ -491,12 +491,12 @@ namespace BTreeLib
 	BTreeNode<T, Compare> *BTreeNode<T, Compare>::search(T k)
 	{
 		// Old code (obsolete)
-		//int i = 0;
-		//while (i < n && cmp(keys[i], k)) // keys[i] < k
-		//	i++;
+		int i = positionOfFirstKey;
+		while (i < n + positionOfFirstKey && cmp(keys[i % ndCapacity], k)) // keys[i] < k
+			i++;
 
 		// Find the first key greater than or equal to k
-		int left = positionOfFirstKey, right = positionOfFirstKey + n - 1, middle, i = 0;
+		/*int left = positionOfFirstKey, right = positionOfFirstKey + n - 1, middle, i = 0;
 		while (left <= right)
 		{
 			middle = (left + right) / 2;
@@ -514,7 +514,7 @@ namespace BTreeLib
 					left = middle + 1;
 					i = left;
 				}
-		}
+		}*/
 
 		// If the found key is equal to k, return this node
 		if (keys[i % ndCapacity] == k) // keys[i] == k!
