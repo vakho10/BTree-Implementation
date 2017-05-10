@@ -5,7 +5,6 @@
 #include <functional>
 
 #include <iostream>
-#include "Helpers.h"
 
 #include "../BTreeLib/OldBTree.h"
 
@@ -24,16 +23,51 @@ int main()
 	OldBTree* t1 = new OldBTree(3);
 	BTree<int>* t2 = new BTree<int>(3);
 
+	//// Fill trees with test data before tests
+	//for (int i = 2; i <= 10; i+=2)	{
+	//	t2->insert(i);
+	//}
+
+	//t2->insert(-2);
+	//t2->insert(2);
+	//t2->insert(2);
+	//t2->insert(12);
+
+	//t2->traverse();
+	//cout << endl;
+
+	//auto node = t2->search(2);
+	//if (node != NULL) {
+	//	cout << node->findKey(3) << endl;
+	//}
+	//else {
+	//	cout << "Not found!" << endl;
+	//}
+
+
 	// Fill trees with test data before tests
-	for (int i = 2; i <= 10; i+=2)	{
+
+	for (int i = 1; i <= 10; i++)
+	{
 		t1->insert(i);
-		t2->insert(i);
+		if (i == 9)
+			t2->insert(i);
+		else
+			t2->insert(i);
 	}
 
-	t2->insert(-2);
-	t2->insert(3);
-
 	t2->traverse();
+	cout << endl;
+
+	for (int i = 1; i <= 10; i++)
+	{
+		int index1 = t1->search(i)->findKey(i);
+		int index2 = t2->search(i)->findKey(i);
+		cout << index1 << ", " << index2 << endl;
+	}
+
+
+
 
 	//int k = 10;
 	//int* keys = new int[3] { 12, 15, 16 };

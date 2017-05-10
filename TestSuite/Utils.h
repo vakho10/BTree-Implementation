@@ -1,55 +1,15 @@
 ﻿#pragma once
 
-#include "../BTreeLib/Helpers.h"
-
 // Utility class that contains utility functions
 class Utils
 {
 public:
 
-	// Function which finds and returns index of key or where it should be
-	static int find_ind_inNode(int* x, int k, int st, int fin, int ndCapacity)
-	{
-		if (st == fin) return st;
-		int middle = (st + fin) / 2;
-		if (k > x[middle % ndCapacity])  return find_ind_inNode(x, k, middle + 1, fin, ndCapacity);
-		return find_ind_inNode(x, k, st, middle, ndCapacity);
-
-		/*int left = st;
-		int right = st + size - 1;
-		int middle;
-		int i = 0;
-		while (left <= right)
-		{
-			middle = (left + right) / 2;
-			if (k == keys[middle % capacity])
-			{
-				i = middle;
-				right = middle - 1;
-			}
-			else
-				if (k < keys[middle % capacity]) {
-					right = middle - 1;	
-					i = right;
-				}
-				else {
-					left = middle + 1;
-					i = left;
-				}
-		}
-		return i % capacity;*/
-
-		/*if (st == fin) return st;
-		int middle = (st + fin) / 2;
-		if (k > x->key[middle % ndCapacity])  return find_ind_inNode(x, k, middle + 1, fin);
-		return find_ind_inNode(x, k, st, middle);*/
-	}
-
 	// Function which finds key in array using while loop
 	static int findKeyUsingWhile(int k, int* arr, int size)
 	{
 		int i = 0;
-		while (i < size && arr[i] < k)
+		while (i < size && arr[i] <= k)
 			++i;
 		return i;
 	}
@@ -63,12 +23,14 @@ public:
 			middle = (left + right) / 2;
 			if (k == arr[middle])
 			{
-				i = middle;
-				right = middle - 1;
+				left = middle + 1;
+				i = left;
 			}
 			else
-				if (k < arr[middle])
+				if (k < arr[middle]) {
 					right = middle - 1;
+					i = middle;
+				}
 				else {
 					left = middle + 1;
 					i = left;

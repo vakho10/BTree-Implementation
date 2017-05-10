@@ -38,7 +38,7 @@ namespace BTreeLib
 				// ვცვლით ფესვს ახლით
 				root = s;
 			}
-			else  // თუ ფესვი არ არის სავსე, მაშინ დაუძახე insertNonFull ფუნქციას ფესვისთვის
+			else // თუ ფესვი არ არის სავსე, მაშინ დაუძახე insertNonFull ფუნქციას ფესვისთვის
 				root->insertNonFull(k);
 		}
 	}

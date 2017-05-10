@@ -2,7 +2,6 @@
 #include "CppUnitTest.h"
 
 #include "Utils.h"
-#include "../BTreeLib/Helpers.h"
 
 #include <random>
 #include <algorithm>
@@ -21,37 +20,57 @@ namespace TestSuite
 		// Test if the new (changed) binary search code works correctly 
 		TEST_METHOD(TestBinarySearch)
 		{
-			int size = 1000, whileIndex, binaryIndex;
-			int* arr = new int[size];
+			int size = 5, whileInd, binInd;
+			int* arr1 = new int[size] {0, 1, 2, 2, 3}; // 1 -> index:2
+			int* arr2 = new int[size] {0, 1, 2, 3, 3}; // 2 -> index:3
+			int* arr3 = new int[size] {1, 1, 2, 3, 3}; // 0 -> index:0 (first)
+			int* arr4 = new int[size] {1, 1, 2, 3, 4}; // 4 -> index:4 (last)
 
-			// Generate random numbers
+			// While test 
+			Assert::AreEqual(2, Utils::findKeyUsingWhile(1, arr1, size));
+			Assert::AreEqual(3, Utils::findKeyUsingWhile(2, arr2, size));
+			Assert::AreEqual(0, Utils::findKeyUsingWhile(0, arr3, size));
+			Assert::AreEqual(5, Utils::findKeyUsingWhile(4, arr4, size));
+
+			// Test 1
+			whileInd = Utils::findKeyUsingWhile(1, arr1, size);
+			binInd = Utils::findKeyUsingBinary(1, arr1, size);
+			Assert::AreEqual(whileInd, binInd);
+
+			// Test 2
+			whileInd = Utils::findKeyUsingWhile(2, arr2, size);
+			binInd = Utils::findKeyUsingBinary(2, arr2, size);
+			Assert::AreEqual(whileInd, binInd);
+
+			// Test 3 (nonexisting first)
+			whileInd = Utils::findKeyUsingWhile(0, arr3, size);
+			binInd = Utils::findKeyUsingBinary(0, arr3, size);
+			Assert::AreEqual(whileInd, binInd);
+
+			// Test 4 (nonexisting last)
+			whileInd = Utils::findKeyUsingWhile(4, arr4, size);
+			binInd = Utils::findKeyUsingBinary(4, arr4, size);
+			Assert::AreEqual(whileInd, binInd);
+
+			// Random dynamic tests
 			random_device rd;
 			mt19937 rng(rd());
 			uniform_int_distribution<int> uni(1, 50); // [1, 50]
-			for (size_t i = 0; i < size; i++) {
+			int* arr = new int[100];
+			for (size_t i = 0; i < 100; i++) 
 				arr[i] = uni(rng);
-			}
+			
 			sort(arr, arr + size);
 
-			// Existing
-			uniform_int_distribution<int> uni2(0, size - 1);
+			// Check for existing and nonexisting elements
+			uniform_int_distribution<int> uni2(0, size + 2);
 			for (size_t i = 0; i < size; i++)
 			{
 				int index = uni2(rng);
-				whileIndex = Utils::findKeyUsingWhile(arr[index], arr, size);
-				binaryIndex = Utils::findKeyUsingBinary(arr[index], arr, size);
-				Assert::AreEqual(whileIndex, binaryIndex);
+				whileInd = Utils::findKeyUsingWhile(arr[index], arr, size);
+				binInd = Utils::findKeyUsingBinary(arr[index], arr, size);
+				Assert::AreEqual(whileInd, binInd);
 			}
-
-			// Nonexisting (first)
-			whileIndex = Utils::findKeyUsingWhile(1000, arr, size);
-			binaryIndex = Utils::findKeyUsingBinary(1000, arr, size);
-			Assert::AreEqual(whileIndex, binaryIndex);
-
-			// Nonexisting (last)
-			whileIndex = Utils::findKeyUsingWhile(-1000, arr, size);
-			binaryIndex = Utils::findKeyUsingBinary(-1000, arr, size);
-			Assert::AreEqual(whileIndex, binaryIndex);
 		}
 
 		// Test new, circular array representation
