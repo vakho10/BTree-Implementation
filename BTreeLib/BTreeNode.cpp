@@ -15,7 +15,7 @@ namespace BTreeLib
 
 		// Allocate memory for maximum number of possible keys and child pointers
 		keys = (T*)malloc(sizeof(T)*(ndCapacity)); // new T[2 * t - 1];
-		C = new BTreeNode<T, Compare>* [2 * t - 1]; // same size as keys
+		C = new BTreeNode<T, Compare>*[2 * t - 1]; // same size as keys
 
 		// Initialize the number of keys as 0
 		n = 0;
@@ -353,19 +353,53 @@ namespace BTreeLib
 			// The following loop does two things
 			// a) Finds the location of new key to be inserted
 			// b) Moves all greater keys to one place ahead
-			while (i >= positionOfFirstKey && cmp(k, keys[i % ndCapacity])) // keys[i] > k
-			{
-				keys[(i + 1) % ndCapacity] = keys[i % ndCapacity];
-				i--;
-			}
 
-			// Insert the new key at found location
-			keys[(i + 1) % ndCapacity] = k;
-			n = n + 1;
+			// FIXME speedup!
+			//while (i >= positionOfFirstKey && cmp(k, keys[i % ndCapacity])) // keys[i] > k
+			//{
+			//	keys[(i + 1) % ndCapacity] = keys[i % ndCapacity];
+			//	i--;
+			//}
+
+			// იპოვე ელემენტი, რომლიდანაც დაწყებული წაძვრა უნდა მოხდეს (ანუ სადაც უნდა ჩაისვას ელემენტი)
+			int st = positionOfFirstKey;
+			int fin = positionOfFirstKey + n - 1;
+			int i = find_ind_inNode(this, k, positionOfFirstKey, positionOfFirstKey + n - 1);
+
+			// წაძარი ელემენტები ოპტიმალურად
+			if (i - st >= fin - i) // თუ ბოლოსთან უფრო ახლოსაა (ან შუაშია)
+			{
+				// სადაც უნდა ყოფილიყო, თუ უფრო პატარა გასაღები დახვდა, მაშინ  მარჯვნივ გაიწევს ინდექსი 
+				if (k > keys[i % ndCapacity]) ++i;
+
+				// ზოგიერთი გასაღების გაწევა, მარჯვენა ბოლოდან დაწყებული, რომ ადგილი გავათავისუფლოთ
+				while (i <= fin) 
+				{
+					keys[(fin + 1 + ndCapacity) % ndCapacity] = keys[(fin + ndCapacity) % ndCapacity];
+					--fin;
+				}
+				keys[i % ndCapacity] = k; // გასაღების ჩასმა
+			}
+			else // თუ თავთან უფრო ახლოა, მაშინ ელემენტების ნაწილია მარცხნივ გადმოსაწევი
+			{
+				// პირველი გასაღების პოზიცია მარცხნივ გაიწევს
+				positionOfFirstKey = (st - 1 + ndCapacity) % ndCapacity;
+
+				// გასაღები სადაც უნდა ყოფილიყო, თუ უფრო დიდი გასაღები დახვდა, მაშინ  მარცხნივ გაიწევს ინდექსი 
+				if (k < keys[i % ndCapacity]) --i;
+				while (st <= i)
+				{
+					keys[(st - 1 + ndCapacity) % ndCapacity] = keys[st % ndCapacity];
+					++st;
+				}
+				keys[(i + ndCapacity) % ndCapacity] = k; // გასაღების ჩასმა
+			}
+			n = n + 1; // ზომის გაზრდა
 		}
 		else // თუ ეს კვანძი არ არის ფოთოლი
 		{
 			// Find the child which is going to have the new key
+			// FIXME speedup!
 			while (i >= positionOfFirstKey && cmp(k, keys[i % ndCapacity])) // keys[i] > k
 				i--;
 
@@ -389,7 +423,7 @@ namespace BTreeLib
 						c_last->insertNonFull(k);
 						return;
 					}
-				}				
+				}
 			}
 			C[(i + 1) % ndCapacity]->insertNonFull(k);
 		}
@@ -405,17 +439,17 @@ namespace BTreeLib
 		BTreeNode<T, Compare> *z = new BTreeNode<T, Compare>(y->t, y->leaf);
 		z->n = t - 1;
 		z->positionOfFirstKey = 0; // z-ს აქვს უბრალო ინდექსირება (რადგანაც ახალი შექმნილია)
-				
+
 		// დააკოპირე პირველი (t-1) გასაღებები y-დან z-ში
 		for (int j = 0; j < t - 1; j++)
 			z->keys[j] = y->keys[(j + y->positionOfFirstKey) % y->ndCapacity];
 
 		// თუ ფოთოლი არაა, მაშინ შვილებიც დააკოპირე z-ში
 		if (y->leaf == false)
-		{			
+		{
 			for (int j = 0; j < t; j++)
 				z->C[j] = y->C[(j + y->positionOfFirstKey) % y->ndCapacity];
-			
+
 			// შუას შვილი გახადე z-ის ბოლოს მარჯვენა
 			z->C[t] = y->C[(t + y->positionOfFirstKey) % y->ndCapacity];
 		}
@@ -424,12 +458,12 @@ namespace BTreeLib
 		// ასევე დასაწყისის ინდექსი იცვლება
 		y->n = t - 1;
 		y->positionOfFirstKey = (y->positionOfFirstKey + t) % y->ndCapacity;
-		
+
 		// სავსე რადგან იყო ე. ი. სათადარიგოში რაღაც გვაქვს. 
 		// გადავიტანოთ სათადარიგოდან რეალურში (შვილი თუ ჰყავს მხოლოდ მაგ შემთხვევაში)!
-		if (y->leaf == false) 		
+		if (y->leaf == false)
 			y->C[(y->positionOfFirstKey + y->n - 1) % ndCapacity] = y->c_last;
-		
+
 		// Since this node is going to have a new child,
 		// create space of new child	
 		// FIXME მეორე ვარიატია მაინც ბოლო ყოველთვის გადაიტანო სათადარიგოში
@@ -443,17 +477,17 @@ namespace BTreeLib
 			C[(positionOfFirstKey + j + 1) % ndCapacity] = C[(positionOfFirstKey + j) % ndCapacity];
 
 		C[i % ndCapacity] = z; // z კვანძი გახადე მიმდინარე i-ურის მარცხენა შვილი  		
-		
+
 		// y კვანძი გახადე მიმდინარე i-ურის მარჯვენა შვილი  
 		if (n + 1 == ndCapacity)
 			c_last = y;
-		else 
+		else
 			C[(i + 1) % ndCapacity] = y;
-		
+
 		// შვილები მოგვარებულია, ახლა გასაღებისთვის ადგილის გამოყოფა
 		for (int j = n - 1; j >= i; j--)
 			keys[(j + 1) % ndCapacity] = keys[j % ndCapacity];
-		
+
 		// Copy the middle key of y to this node
 		keys[i % ndCapacity] = y->keys[((y->positionOfFirstKey - 1) + ndCapacity) % ndCapacity];
 
@@ -483,7 +517,7 @@ namespace BTreeLib
 				c_last->traverse();
 			else if (i <= positionOfFirstKey + n)
 				C[i % ndCapacity]->traverse();
-		
+
 	}
 
 	// Function to search key k in subtree rooted with this node

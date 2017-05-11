@@ -2,7 +2,7 @@
 // Template class separation workarounds described here: https://www.codeproject.com/Articles/48575/How-to-define-a-template-class-in-a-h-file-and-imp
 // For time computation we're using chrono library: http://en.cppreference.com/w/cpp/chrono
 
-#define TEN_MILLION 1000
+#define TEN_MILLION 1000000
 
 #include <iostream>
 #include <string>
@@ -103,7 +103,7 @@ void testAndDetermineBestT()
 void checkInsertionSearchDeletion()
 {
 	cout << "Testing insertions:" << endl;
-	for (unsigned int size = 1000; size <= TEN_MILLION; size *= 10)
+	for (unsigned int size = 100000; size <= TEN_MILLION; size *= 10)
 	{
 		rbNodes = new Node<int>*[size];
 		for (size_t i = 0; i < size; i++)

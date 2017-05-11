@@ -23,7 +23,6 @@ namespace TestSuite
 		OldBTree* t1 = new OldBTree(3);
 		BTree<int>* t2 = new BTree<int>(3);
 
-		// Fill trees with test data before tests
 		BTreeTests()
 		{
 			for (int i = 2; i <= 20; i+=2)
@@ -39,7 +38,6 @@ namespace TestSuite
 			}
 		}
 
-		// Test if both versions get the same results when searching keys
 		TEST_METHOD(TestSearch)
 		{
 			for (int i = 1; i <= 20; i++)
@@ -52,21 +50,9 @@ namespace TestSuite
 			}
 		}
 
-		// Test if both versions remove data correctly
 		TEST_METHOD(TestRemove)
 		{
-			for (int i = 2; i <= 9; i++)
-			{
-				t1->remove(i);
-				t2->remove(i);
-			}
-			// Finding 1
-			Assert::AreEqual(t1->search(1)->findKey(1), 0);
-			Assert::AreEqual(t2->search(1)->findKey(1), 0);
-
-			// Finding 10
-			Assert::AreEqual(t1->search(10)->findKey(10), 1);
-			Assert::AreEqual(t2->search(10)->findKey(10), 1);
+			Assert::Fail(L"Test not implemented yet!");			
 		}
 	};
 }

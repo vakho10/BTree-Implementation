@@ -21,16 +21,23 @@ namespace TestSuite
 		TEST_METHOD(TestBinarySearch)
 		{
 			int size = 5, whileInd, binInd;
+			int* arr0 = new int[size] {0, 1, 1, 2, 3, 3}; // 1 -> index:2
 			int* arr1 = new int[size] {0, 1, 2, 2, 3}; // 1 -> index:2
 			int* arr2 = new int[size] {0, 1, 2, 3, 3}; // 2 -> index:3
 			int* arr3 = new int[size] {1, 1, 2, 3, 3}; // 0 -> index:0 (first)
 			int* arr4 = new int[size] {1, 1, 2, 3, 4}; // 4 -> index:4 (last)
 
 			// While test 
+			Assert::AreEqual(4, Utils::findKeyUsingWhile(2, arr0, size + 1));
 			Assert::AreEqual(2, Utils::findKeyUsingWhile(1, arr1, size));
 			Assert::AreEqual(3, Utils::findKeyUsingWhile(2, arr2, size));
 			Assert::AreEqual(0, Utils::findKeyUsingWhile(0, arr3, size));
 			Assert::AreEqual(5, Utils::findKeyUsingWhile(4, arr4, size));
+
+			// Test 0
+			whileInd = Utils::findKeyUsingWhile(2, arr0, size + 1);
+			binInd = Utils::findKeyUsingBinary(2, arr0, size + 1);
+			Assert::AreEqual(whileInd, binInd);
 
 			// Test 1
 			whileInd = Utils::findKeyUsingWhile(1, arr1, size);

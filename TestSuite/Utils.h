@@ -5,6 +5,14 @@ class Utils
 {
 public:
 
+	int find_ind_inNode(int* arr, int k, int st, int fin, int arrCapacity)
+	{
+		if (st == fin) return st;
+		int middle = (st + fin) / 2;
+		if (k > arr[middle % arrCapacity])  return find_ind_inNode(arr, k, middle + 1, fin, arrCapacity);
+		return find_ind_inNode(arr, k, st, middle, arrCapacity);
+	}
+
 	// Function which finds key in array using while loop
 	static int findKeyUsingWhile(int k, int* arr, int size)
 	{
