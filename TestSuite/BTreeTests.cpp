@@ -25,13 +25,13 @@ namespace TestSuite
 
 		BTreeTests()
 		{
-			for (int i = 2; i <= 20; i+=2)
+			for (int i = 2; i <= 30; i+=2)
 			{
 				t1->insert(i);
 				t2->insert(i);				
 			}
 
-			for (int i = 1; i <= 20; i+=2)
+			for (int i = 1; i <= 30; i+=2)
 			{
 				t1->insert(i);
 				t2->insert(i);
@@ -40,7 +40,7 @@ namespace TestSuite
 
 		TEST_METHOD(TestSearch)
 		{
-			for (int i = 1; i <= 20; i++)
+			for (int i = 1; i <= 30; i++)
 			{				
 				int index1 = t1->search(i)->findKey(i);
 

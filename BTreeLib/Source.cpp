@@ -47,19 +47,22 @@ int main()
 
 	// Fill trees with test data before tests
 
-	for (int i = 1; i <= 10; i++)
+	for (int i = -30; i <= 30; i++)
 	{
 		t1->insert(i);
-		if (i == 9)
-			t2->insert(i);
-		else
-			t2->insert(i);
+		t2->insert(i);
+	}
+
+	for (int i = 2; i <= 30; i+=2)
+	{
+		t1->insert(i);
+		t2->insert(i);
 	}
 
 	t2->traverse();
 	cout << endl;
 
-	for (int i = 1; i <= 10; i++)
+	for (int i = -30; i <= 30; i++)
 	{
 		int index1 = t1->search(i)->findKey(i);
 		
