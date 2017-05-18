@@ -46,29 +46,47 @@ int main()
 
 
 	// Fill trees with test data before tests
-
-	for (int i = -30; i <= 30; i++)
+	// Shuffle array with different elements and test insertion
+	std::random_device rd;  //Will be used to obtain a seed for the random number engine
+	std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
+	std::uniform_int_distribution<> dis(15, 20);
+	int size = dis(gen);
+	int *numbers = new int[size];
+	for (int i = 1; i <= size; i++)
 	{
-		t1->insert(i);
-		t2->insert(i);
+		numbers[i - 1] = i;
 	}
-
-	for (int i = 2; i <= 30; i+=2)
+	std::random_shuffle(numbers, numbers + size);
+	for (size_t i = 0; i < size; i++)
 	{
-		t1->insert(i);
-		t2->insert(i);
+		cout << numbers[i] << ", ";
 	}
+	cout << endl;
 
+	for (int i = 0; i < size; i++)
+	{
+		t1->insert(numbers[i]);
+		t2->insert(numbers[i]);
+	}
+	
+	t1->traverse();
+	cout << endl;
 	t2->traverse();
 	cout << endl;
 
-	for (int i = -30; i <= 30; i++)
+	for (int i = 1; i <= size; i++)
 	{
 		int index1 = t1->search(i)->findKey(i);
 		
 		auto node = t2->search(i);
+		
+		if (node == NULL) {
+			cout << "NULL!" << endl;
+			break;
+		}
 		int index2 = node->findKey(i);
-		cout << index1 << ", " << index2 - node->getPositionOfFirstKey() << endl;
+		cout << "Looking for: " << i;
+		cout << index1 << ", " << index2 - node->getPositionOfFirstKey() << " => " << (index1 == index2) << endl;
 	}
 
 

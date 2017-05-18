@@ -541,6 +541,7 @@ namespace OldTree
 	// Function to traverse all nodes in a subtree rooted with this node
 	void OldBTreeNode::traverse()
 	{
+		cout << " [";
 		// There are n keys and n+1 children, travers through n keys
 		// and first n children
 		int i;
@@ -550,12 +551,13 @@ namespace OldTree
 			// traverse the subtree rooted with child C[i].
 			if (leaf == false)
 				C[i]->traverse();
-			cout << " " << keys[i];
+			cout << keys[i] << " ";
 		}
 
 		// Print the subtree rooted with last child
 		if (leaf == false)
 			C[i]->traverse();
+		cout << "] ";
 	}
 
 	// Function to search key k in subtree rooted with this node

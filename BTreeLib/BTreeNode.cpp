@@ -39,27 +39,27 @@ namespace BTreeLib
 		while (idx < n + positionOfFirstKey && cmp(keys[idx % ndCapacity], k)) // keys[idx] < k
 			++idx;
 
-		//// Find the first key greater than or equal to k
-		//int left = positionOfFirstKey, right = positionOfFirstKey + n - 1, middle, i = 0;
-		//while (left <= right)
-		//{
-		//	middle = (left + right) / 2;
-		//	if (k == keys[middle % ndCapacity])
-		//	{
-		//		i = middle;
-		//		right = middle - 1;
-		//		break;
-		//	}
-		//	else
-		//		if (k < keys[middle % ndCapacity]) {
-		//			i = middle;
-		//			right = middle - 1;
-		//		}
-		//		else {
-		//			left = middle + 1;
-		//			i = left;
-		//		}
-		//}
+		// Find the first key greater than or equal to k
+		/*int left = positionOfFirstKey, right = positionOfFirstKey + n - 1, middle, i = positionOfFirstKey;
+		while (left <= right)
+		{
+			middle = (left + right) / 2;
+			if (k == keys[middle % ndCapacity])
+			{
+				i = middle;
+				right = middle - 1;
+				break;
+			}
+			else
+				if (k < keys[middle % ndCapacity]) {
+					i = middle;
+					right = middle - 1;
+				}
+				else {
+					left = middle + 1;
+					i = left;
+				}
+		}*/
 		return idx;
 	}
 
@@ -357,7 +357,7 @@ namespace BTreeLib
 			// FIXME speedup!
 			while (i >= positionOfFirstKey && cmp(k, keys[i % ndCapacity])) // keys[i] > k
 			{
-				keys[(i + 1) % ndCapacity] = keys[i % ndCapacity];
+				keys[(i + 1) % ndCapacity] = keys[(i + ndCapacity) % ndCapacity];
 				i--;
 			}
 
@@ -424,8 +424,8 @@ namespace BTreeLib
 					// თუ კვანძი შეივსო და ბოლოში ხდება ჩამატება მაშინ მარჯვენა შვილი არის სათადარიგო კვანძში
 					if (n == 2 * t - 1 && i + 2 == positionOfFirstKey + ndCapacity)
 						childToInsertInto = c_last;
-					else 
-						childToInsertInto = C[(i + 2) % ndCapacity];					
+					else
+						childToInsertInto = C[(i + 2) % ndCapacity];
 				}
 			}
 			childToInsertInto->insertNonFull(k);
@@ -462,11 +462,11 @@ namespace BTreeLib
 
 		// თუ ბოლოში ხდება ჩამატება, მაშინ არაფრის გაწევა და წაჩოჩებები არ არის საჭირო!
 		// i ამ დროს იქნება positionOfFirstKey + ndCapacity - 1
-		if (i == positionOfFirstKey + ndCapacity - 1) 
+		if (i == positionOfFirstKey + ndCapacity - 1)
 		{
 			c_last = z;
 		}
-		else 
+		else
 		{
 			// შემოწმება სისავსეზე შვილების გაწევის დროს		
 			int iterationStart = positionOfFirstKey + n;
@@ -482,7 +482,7 @@ namespace BTreeLib
 
 			// მარჯვნივ რაც წაიჩოჩა იმისი შვილი იქნება z
 			C[(i + 1) % ndCapacity] = z; // z კვანძი გახადე მიმდინარე i-ურის მარცხენა შვილი
-		}		
+		}
 
 		// შვილები მოგვარებულია, ახლა გასაღებისთვის ადგილის გამოყოფა
 		for (int j = n - 1 + positionOfFirstKey; j >= i; j--)
@@ -499,6 +499,7 @@ namespace BTreeLib
 	template<typename T, typename Compare>
 	void BTreeNode<T, Compare>::traverse()
 	{
+		cout << " [ ";
 		// There are n keys and n+1 children, travers through n keys
 		// and first n children
 		int i;
@@ -508,16 +509,16 @@ namespace BTreeLib
 			// traverse the subtree rooted with child C[i].
 			if (leaf == false)
 				C[i % ndCapacity]->traverse();
-			cout << " " << keys[i % ndCapacity];
+			cout << keys[i % ndCapacity] << " ";
 		}
 
 		// Print the subtree rooted with last child
 		if (leaf == false) // traverse last child 
 			if (n == ndCapacity)
 				c_last->traverse();
-			else if (i <= positionOfFirstKey + n)
+			else if (i == positionOfFirstKey + n)
 				C[i % ndCapacity]->traverse();
-
+		cout << "] ";
 	}
 
 	// Function to search key k in subtree rooted with this node
@@ -530,6 +531,27 @@ namespace BTreeLib
 			i++;
 
 		// Find the first key greater than or equal to k
+		/*int left = positionOfFirstKey, right = positionOfFirstKey + n - 1, middle, i = positionOfFirstKey;
+		while (left <= right)
+		{
+			middle = (left + right) / 2;
+			if (k == keys[middle % ndCapacity])
+			{
+				i = middle;
+				right = middle - 1;
+				break;
+			}
+			else
+				if (k < keys[middle % ndCapacity]) {
+					i = middle;
+					right = middle - 1;
+				}
+				else {
+					left = middle + 1;
+					i = left;
+				}
+		}*/
+
 		/*int left = positionOfFirstKey, right = positionOfFirstKey + n - 1, middle, i = 0;
 		while (left <= right)
 		{
@@ -550,8 +572,8 @@ namespace BTreeLib
 				}
 		}*/
 
-		// If the found key is equal to k, return this node
-		if (keys[i % ndCapacity] == k) // keys[i] == k!
+		// თუ i არ არის საზღვრებს იქით და i-ური გასაღები k-ს ტოლია
+		if (i != ndCapacity + positionOfFirstKey && keys[i % ndCapacity] == k) // keys[i] == k!
 			return this;
 
 		// If key is not found here and this is a leaf node
@@ -559,6 +581,9 @@ namespace BTreeLib
 			return NULL;
 
 		// Go to the appropriate child
-		return C[i % ndCapacity]->search(k);
+		if (i == ndCapacity + positionOfFirstKey) // Should look in last child!
+			return c_last->search(k);
+		else
+			return C[i % ndCapacity]->search(k);
 	}
 }

@@ -148,8 +148,10 @@
   <ItemGroup>
     <ClInclude Include="BTree.h" />
     <ClInclude Include="BTreeNode.h" />
+    <ClInclude Include="BTreePrinter.h" />
     <ClInclude Include="OldBTree.h" />
     <ClInclude Include="RB.h" />
+    <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BTree.cpp" />

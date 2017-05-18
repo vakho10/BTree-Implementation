@@ -31,7 +31,12 @@ namespace BTreeLib
 		// function to search a key in this tree
 		BTreeNode<T, Compare>* search(T k)
 		{
-			return (root == NULL) ? NULL : root->search(k);
+			if (root == NULL) {
+				cout << "root was null! ";
+				return NULL;
+			}
+			return root->search(k);
+			//return (root == NULL) ? NULL : root->search(k);
 		}
 
 		// The main function that inserts a new key in this B-Tree
