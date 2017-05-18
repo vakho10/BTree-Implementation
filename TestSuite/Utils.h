@@ -1,53 +1,5 @@
 ﻿#pragma once
 
-// Utility class that contains utility functions
-class Utils
-{
-public:
-
-	int find_ind_inNode(int* arr, int k, int st, int fin, int arrCapacity)
-	{
-		if (st == fin) return st;
-		int middle = (st + fin) / 2;
-		if (k > arr[middle % arrCapacity])  return find_ind_inNode(arr, k, middle + 1, fin, arrCapacity);
-		return find_ind_inNode(arr, k, st, middle, arrCapacity);
-	}
-
-	// Function which finds key in array using while loop
-	static int findKeyUsingWhile(int k, int* arr, int size)
-	{
-		int i = 0;
-		while (i < size && arr[i] <= k)
-			++i;
-		return i;
-	}
-
-	// Function which finds key in array using modified binary search algorithm
-	static int findKeyUsingBinary(int k, int* arr, int size)
-	{
-		int left = 0, right = size - 1, middle, i = 0;
-		while (left <= right)
-		{
-			middle = (left + right) / 2;
-			if (k == arr[middle])
-			{
-				left = middle + 1;
-				i = left;
-			}
-			else
-				if (k < arr[middle]) {
-					right = middle - 1;
-					i = middle;
-				}
-				else {
-					left = middle + 1;
-					i = left;
-				}
-		}
-		return i;
-	}
-};
-
 template<typename T>
 struct CircularArray
 {
@@ -196,3 +148,58 @@ inline void CircularArray<T>::print()
 	}
 	cout << "]" << endl;
 }
+
+
+// Utility class that contains utility functions
+namespace Utils
+{
+	int find_ind_inNode(int* arr, int k, int st, int fin, int arrCapacity)
+	{
+		if (st == fin) return st;
+		int middle = (st + fin) / 2;
+		if (k > arr[middle % arrCapacity])  return find_ind_inNode(arr, k, middle + 1, fin, arrCapacity);
+		return find_ind_inNode(arr, k, st, middle, arrCapacity);
+	}
+
+	// Function which finds key in array using while loop
+	int findKeyUsingWhile(int k, int* arr, int size)
+	{
+		int i = 0;
+		while (i < size && arr[i] <= k)
+			++i;
+		return i;
+	}
+
+	// Function which finds key in array using modified binary search algorithm
+	static int findKeyUsingBinary(int k, int* arr, int size)
+	{
+		int left = 0, right = size - 1, middle, i = 0;
+		while (left <= right)
+		{
+			middle = (left + right) / 2;
+			if (k == arr[middle])
+			{
+				left = middle + 1;
+				i = left;
+			}
+			else
+				if (k < arr[middle]) {
+					right = middle - 1;
+					i = middle;
+				}
+				else {
+					left = middle + 1;
+					i = left;
+				}
+		}
+		return i;
+	}
+
+	int find_ind_inNode_2(CircularArray<int>* x, int k, int st, int fin)
+	{
+		if (st == fin) return st;
+		int middle = (st + fin) / 2;
+		if (x->keys[middle % x->arrCapacity] < k)  return find_ind_inNode_2(x, k, middle + 1, fin);
+		return find_ind_inNode_2(x, k, st, middle);
+	}
+};

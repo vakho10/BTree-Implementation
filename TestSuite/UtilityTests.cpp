@@ -81,6 +81,37 @@ namespace TestSuite
 			}
 		}
 
+		TEST_METHOD(TestSecondBinarySearch)
+		{
+			int n = 9;
+			int* inputs = new int[n] { 1, 1, 2, 3, 4, 4, 5, 7, 9 };
+			CircularArray<int>* newArr = new CircularArray<int>(20);
+			newArr->positionOfFirstKey = 0;
+
+			for (size_t i = 0; i < n; i++)
+				newArr->insert(i);
+
+			// Should be transfered to -1 (Check 0)
+			int i = Utils::find_ind_inNode_2(newArr, 0, newArr->positionOfFirstKey, newArr->positionOfFirstKey + newArr->keysNumber - 1);
+			if (inputs[i] > 0) i--; // Transferring
+			Assert::AreEqual(-1, i);
+
+			// (Check 1)
+			i = Utils::find_ind_inNode_2(newArr, 1, newArr->positionOfFirstKey, newArr->positionOfFirstKey + newArr->keysNumber - 1);
+			if (inputs[i] > 1) i--; // Transferring
+			Assert::AreEqual(1, i);
+
+			// (Check 9)
+			i = Utils::find_ind_inNode_2(newArr, 8, newArr->positionOfFirstKey, newArr->positionOfFirstKey + newArr->keysNumber - 1);
+			if (inputs[i] > 8) i--; // Transferring
+			Assert::AreEqual(7, i);
+
+			// (Check 123)
+			i = Utils::find_ind_inNode_2(newArr, 123, newArr->positionOfFirstKey, newArr->positionOfFirstKey + newArr->keysNumber - 1);
+			if (inputs[i] > 123) i--; // Transferring
+			Assert::AreEqual(8, i);
+		}
+
 		// Test new, circular array representation
 		TEST_METHOD(TestCircularArray)
 		{

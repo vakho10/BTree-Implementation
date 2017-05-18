@@ -342,7 +342,7 @@ namespace BTreeLib
 	// A utility function to insert a new key in this node
 	// ჩვენი დაშვებაა, რომ კვანძი არ არის სავსე ამ ფუნქციის გამოძახებისას
 	template<typename T, typename Compare>
-	void BTreeNode<T, Compare>::insertNonFull(T k)
+	void BTreeNode<T, Compare>::insertNonFull(T k) // Optimized!
 	{
 		// Initialize index as index of rightmost element
 		int i = positionOfFirstKey + n - 1;
@@ -355,57 +355,63 @@ namespace BTreeLib
 			// b) Moves all greater keys to one place ahead
 
 			// FIXME speedup!
-			while (i >= positionOfFirstKey && cmp(k, keys[i % ndCapacity])) // keys[i] > k
-			{
-				keys[(i + 1) % ndCapacity] = keys[(i + ndCapacity) % ndCapacity];
-				i--;
-			}
+			//while (i >= positionOfFirstKey && cmp(k, keys[i % ndCapacity])) // keys[i] > k
+			//{
+			//	keys[(i + 1) % ndCapacity] = keys[(i + ndCapacity) % ndCapacity];
+			//	i--;
+			//}
 
-			// Insert the new key at found location
-			keys[(i + 1) % ndCapacity] = k;
-			n = n + 1;
+			//// Insert the new key at found location
+			//keys[(i + 1) % ndCapacity] = k;
+			//n = n + 1;
 
 			// იპოვე ელემენტი, რომლიდანაც დაწყებული წაძვრა უნდა მოხდეს (ანუ სადაც უნდა ჩაისვას ელემენტი)
-			//int st = positionOfFirstKey;
-			//int fin = positionOfFirstKey + n - 1;
-			//int i = find_ind_inNode(this, k, positionOfFirstKey, positionOfFirstKey + n - 1);
+			int st = positionOfFirstKey;
+			int fin = positionOfFirstKey + n - 1;
+			int i = find_ind_inNode(this, k, positionOfFirstKey, positionOfFirstKey + n - 1);
 
-			//// წაძარი ელემენტები ოპტიმალურად
-			//if (i - st >= fin - i) // თუ ბოლოსთან უფრო ახლოსაა (ან შუაშია)
-			//{
-			//	// სადაც უნდა ყოფილიყო, თუ უფრო პატარა გასაღები დახვდა, მაშინ  მარჯვნივ გაიწევს ინდექსი 
-			//	if (k > keys[i % ndCapacity]) ++i;
+			// წაძარი ელემენტები ოპტიმალურად
+			if (i - st >= fin - i) // თუ ბოლოსთან უფრო ახლოსაა (ან შუაშია)
+			{
+				// სადაც უნდა ყოფილიყო, თუ უფრო პატარა გასაღები დახვდა, მაშინ  მარჯვნივ გაიწევს ინდექსი 
+				if (k > keys[i % ndCapacity]) ++i;
 
-			//	// ზოგიერთი გასაღების გაწევა, მარჯვენა ბოლოდან დაწყებული, რომ ადგილი გავათავისუფლოთ
-			//	while (i <= fin) 
-			//	{
-			//		keys[(fin + 1 + ndCapacity) % ndCapacity] = keys[(fin + ndCapacity) % ndCapacity];
-			//		--fin;
-			//	}
-			//	keys[i % ndCapacity] = k; // გასაღების ჩასმა
-			//}
-			//else // თუ თავთან უფრო ახლოა, მაშინ ელემენტების ნაწილია მარცხნივ გადმოსაწევი
-			//{
-			//	// პირველი გასაღების პოზიცია მარცხნივ გაიწევს
-			//	positionOfFirstKey = (st - 1 + ndCapacity) % ndCapacity;
+				// ზოგიერთი გასაღების გაწევა, მარჯვენა ბოლოდან დაწყებული, რომ ადგილი გავათავისუფლოთ
+				while (i <= fin) 
+				{
+					keys[(fin + 1 + ndCapacity) % ndCapacity] = keys[(fin + ndCapacity) % ndCapacity];
+					--fin;
+				}
+				keys[i % ndCapacity] = k; // გასაღების ჩასმა
+			}
+			else // თუ თავთან უფრო ახლოა, მაშინ ელემენტების ნაწილია მარცხნივ გადმოსაწევი
+			{
+				// პირველი გასაღების პოზიცია მარცხნივ გაიწევს
+				positionOfFirstKey = (st - 1 + ndCapacity) % ndCapacity;
 
-			//	// გასაღები სადაც უნდა ყოფილიყო, თუ უფრო დიდი გასაღები დახვდა, მაშინ  მარცხნივ გაიწევს ინდექსი 
-			//	if (k < keys[i % ndCapacity]) --i;
-			//	while (st <= i)
-			//	{
-			//		keys[(st - 1 + ndCapacity) % ndCapacity] = keys[st % ndCapacity];
-			//		++st;
-			//	}
-			//	keys[(i + ndCapacity) % ndCapacity] = k; // გასაღების ჩასმა
-			//}
-			//n = n + 1; // ზომის გაზრდა
+				// გასაღები სადაც უნდა ყოფილიყო, თუ უფრო დიდი გასაღები დახვდა, მაშინ  მარცხნივ გაიწევს ინდექსი 
+				if (k < keys[i % ndCapacity]) --i;
+				while (st <= i)
+				{
+					keys[(st - 1 + ndCapacity) % ndCapacity] = keys[st % ndCapacity];
+					++st;
+				}
+				keys[(i + ndCapacity) % ndCapacity] = k; // გასაღების ჩასმა
+			}
+			n = n + 1; // ზომის გაზრდა
 		}
 		else // თუ ეს კვანძი არ არის ფოთოლი
 		{
 			// Find the child which is going to have the new key
-			// FIXME speedup!
-			while (i >= positionOfFirstKey && cmp(k, keys[i % ndCapacity])) // keys[i] > k
-				i--;
+			//// FIXME speedup!
+			//while (i >= positionOfFirstKey && cmp(k, keys[i % ndCapacity])) // keys[i] > k
+			//	i--;
+			
+			// იპოვე შვილი რომელსაც ახალი კვანზი ექნება
+			int i = find_ind_inNode(this, k, positionOfFirstKey, positionOfFirstKey + n - 1);
+
+			// გასაღები სადაც უნდა ყოფილიყო, თუ უფრო დიდი გასაღები დახვდა, მაშინ  მარცხნივ გაიწევს ინდექსი 
+			if (k < keys[i % ndCapacity]) --i;
 
 			// See if the found child is full
 			// სადაც ვიმყოფებით ის კვანძი არ არის სავსე (ანუ ბოლო კვანძის გამოყენების შემთხვევა არ გვაქვს)

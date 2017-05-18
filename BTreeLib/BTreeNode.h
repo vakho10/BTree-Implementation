@@ -25,35 +25,15 @@ namespace BTreeLib
 		BTreeNode(int _t, bool _leaf, Compare& _cmp = Compare());   // Constructor
 		~BTreeNode();	
 
+		int getPositionOfFirstKey() { return positionOfFirstKey; }
+
 		int find_ind_inNode(BTreeNode<T, Compare>* x, T k, int st, int fin)
 		{
-			/*int left = positionOfFirstKey, right = positionOfFirstKey + n - 1, middle, i = 0;
-			while (left <= right)
-			{
-				middle = (left + right) / 2;
-				if (k == x->keys[middle % x->ndCapacity])
-				{
-					left = middle + 1;
-					i = left;
-				}
-				else
-					if (k < x->keys[middle % x->ndCapacity]) {
-						right = middle - 1;
-						i = middle;
-					}
-					else {
-						left = middle + 1;
-						i = left;
-					}
-			}
-			return i;*/
 			if (st == fin) return st;
 			int middle = (st + fin) / 2;
-			if (k > x->keys[middle % x->ndCapacity])  return find_ind_inNode(x, k, middle + 1, fin);
+			if (cmp(x->keys[middle % x->ndCapacity], k))  return find_ind_inNode(x, k, middle + 1, fin);
 			return find_ind_inNode(x, k, st, middle);
 		}
-
-		int getPositionOfFirstKey() { return positionOfFirstKey; }
 
 		// A function to traverse all nodes in a subtree rooted with this node
 		void traverse();

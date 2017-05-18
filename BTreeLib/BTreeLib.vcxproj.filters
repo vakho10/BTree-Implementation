@@ -27,9 +27,6 @@
     <ClInclude Include="OldBTree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Utils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="BTreePrinter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
