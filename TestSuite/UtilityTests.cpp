@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "CppUnitTest.h"
 
 #include "Utils.h"
@@ -13,6 +13,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace TestSuite
 {
+	// ტესტი რომელიც ამოწმებს რომ ახალი ორობითი ძებნა იგივე შედეგს იძლევა რასაც ძველი while ციკლი
 	TEST_CLASS(UtilityTests)
 	{
 	public:
