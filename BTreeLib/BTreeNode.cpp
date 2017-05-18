@@ -374,10 +374,10 @@ namespace BTreeLib
 			if (i - st >= fin - i) // თუ ბოლოსთან უფრო ახლოსაა (ან შუაშია)
 			{
 				// სადაც უნდა ყოფილიყო, თუ უფრო პატარა გასაღები დახვდა, მაშინ  მარჯვნივ გაიწევს ინდექსი 
-				if (k > keys[i % ndCapacity]) ++i;
+				if (cmp(keys[i % ndCapacity], k)) ++i;
 
 				// ზოგიერთი გასაღების გაწევა, მარჯვენა ბოლოდან დაწყებული, რომ ადგილი გავათავისუფლოთ
-				while (i <= fin) 
+				while (i <= fin)
 				{
 					keys[(fin + 1 + ndCapacity) % ndCapacity] = keys[(fin + ndCapacity) % ndCapacity];
 					--fin;
@@ -390,7 +390,7 @@ namespace BTreeLib
 				positionOfFirstKey = (st - 1 + ndCapacity) % ndCapacity;
 
 				// გასაღები სადაც უნდა ყოფილიყო, თუ უფრო დიდი გასაღები დახვდა, მაშინ  მარცხნივ გაიწევს ინდექსი 
-				if (k < keys[i % ndCapacity]) --i;
+				if (cmp(k, keys[i % ndCapacity])) --i;
 				while (st <= i)
 				{
 					keys[(st - 1 + ndCapacity) % ndCapacity] = keys[st % ndCapacity];
@@ -406,7 +406,7 @@ namespace BTreeLib
 			//// FIXME speedup!
 			//while (i >= positionOfFirstKey && cmp(k, keys[i % ndCapacity])) // keys[i] > k
 			//	i--;
-			
+
 			// იპოვე შვილი რომელსაც ახალი კვანზი ექნება
 			int i = find_ind_inNode(this, k, positionOfFirstKey, positionOfFirstKey + n - 1);
 
@@ -445,7 +445,6 @@ namespace BTreeLib
 	void BTreeNode<T, Compare>::splitChild(int i, BTreeNode<T, Compare> *y)
 	{
 		// ახალი კვანძი რომელიც შეინახავს y-ის ბოლო (t-1) გასაღებს
-		// რადგან სავსეა ესეიგი ბოლო შვილი სათადარიგოდან რეალურში გადმოგვაქვს!
 		BTreeNode<T, Compare> *z = new BTreeNode<T, Compare>(y->t, y->leaf);
 		z->positionOfFirstKey = 0;
 		z->n = t - 1;
