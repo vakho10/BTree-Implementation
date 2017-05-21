@@ -31,7 +31,7 @@ int main()
 	int *numbers = new int[size];
 	for (int i = 1; i <= size; i++)
 	{
-		numbers[i - 1] = i * -1;
+		numbers[i - 1] = i;
 	}
 	std::random_shuffle(numbers, numbers + size);
 	for (size_t i = 0; i < size; i++)
@@ -43,24 +43,24 @@ int main()
 	for (int i = 0; i < size; i++)
 	{
 		t1->insert(numbers[i]);
-		if (i+1 == 6)
+		if (-i -1 == -9)
 			t2->insert(numbers[i]);
 		else
 			t2->insert(numbers[i]);
 	}
-	
+
 	t1->traverse();
 	cout << endl;
 	t2->traverse();
 	cout << endl;
 
-	for (int i = 1; i <= size; i++)
+	/*for (int i = 1; i <= size; i++)
 	{
 		int index1 = t1->search(-i)->findKey(-i);
-		
-		auto node = t2->search(-i);		
+
+		auto node = t2->search(-i);
 		int index2 = node->findKey(-i);
 		cout << "Looking for " << -i << ": ";
 		cout << index1 << ", " << index2 - node->getPositionOfFirstKey() << " => " << (index1 == index2) << endl;
-	}
+	}*/
 }

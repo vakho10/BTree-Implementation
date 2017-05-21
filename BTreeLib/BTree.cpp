@@ -5,8 +5,7 @@ namespace BTreeLib
 	template<typename T, typename Compare>
 	void BTree<T, Compare>::insert(T k)
 	{
-		// თუ ხე ცარიელია
-		if (root == NULL)
+		if (root == NULL) // თუ ხე ცარიელია
 		{
 			// მეხსიერების გამოყოფა ფესვისთვის
 			root = new BTreeNode<T, Compare>(t, true);
@@ -16,8 +15,7 @@ namespace BTreeLib
 		}
 		else // თუ ხე არ არის ცარიელი
 		{
-			// თუ ფესვი სავსეა, მაშინ ხე იზრდება სიმაღლეში
-			if (root->n == 2 * t - 1)
+			if (root->n == 2 * t - 1) // თუ ფესვი სავსეა, მაშინ ხე იზრდება სიმაღლეში
 			{
 				// გამოვყოფთ მეხსიერებას ახალი ფესვისთვის
 				BTreeNode<T, Compare> *s = new BTreeNode<T, Compare>(t, false);
@@ -30,10 +28,10 @@ namespace BTreeLib
 
 				// ახალ ფესვს ახლა ორი შვილი ჰყავს. გადაწყვიტე 
 				// ამ ორიდან რომელს ექნება ახალი გასაღები
-				int i = 0;
 				if (cmp(s->keys[0], k)) // s->keys[0] < k
-					i++;
-				s->C[i]->insertNonFull(k);
+					s->c_last->insertNonFull(k);
+				else 
+					s->C[0]->insertNonFull(k);
 
 				// ვცვლით ფესვს ახლით
 				root = s;
