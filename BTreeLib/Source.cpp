@@ -25,7 +25,7 @@ int main()
 	// Shuffle array with different elements and test insertion
 	std::random_device rd;  //Will be used to obtain a seed for the random number engine
 	std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
-	std::uniform_int_distribution<> dis(20, 20);
+	std::uniform_int_distribution<> dis(110, 1110);
 	//int size = 12;
 	int size = dis(gen);
 	int *numbers = new int[size];
@@ -43,24 +43,21 @@ int main()
 	for (int i = 0; i < size; i++)
 	{
 		t1->insert(numbers[i]);
-		if (-i -1 == -9)
-			t2->insert(numbers[i]);
-		else
-			t2->insert(numbers[i]);
+		t2->insert(numbers[i]);
 	}
 
 	t1->traverse();
 	cout << endl;
 	t2->traverse();
 	cout << endl;
-
-	/*for (int i = 1; i <= size; i++)
+	
+	for (int i = 1; i <= size; i++)
 	{
-		int index1 = t1->search(-i)->findKey(-i);
+		int index1 = t1->search(i)->findKey(i);
 
-		auto node = t2->search(-i);
-		int index2 = node->findKey(-i);
-		cout << "Looking for " << -i << ": ";
+		auto node = t2->search(i);
+		int index2 = node->findKey(i);
+		cout << "Looking for " << i << ": ";
 		cout << index1 << ", " << index2 - node->getPositionOfFirstKey() << " => " << (index1 == index2) << endl;
-	}*/
+	}
 }

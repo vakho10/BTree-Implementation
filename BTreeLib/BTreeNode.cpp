@@ -344,7 +344,7 @@ namespace BTreeLib
 	template<typename T, typename Compare>
 	void BTreeNode<T, Compare>::insertNonFull(T k) // Optimized!
 	{
-		//// ინდექსი, რომლიდანაც დაწყებული წაძვრა უნდა მოხდეს (ანუ სადაც უნდა ჩაისვას ელემენტი)
+		// ინდექსი, რომლიდანაც დაწყებული წაძვრა უნდა მოხდეს (ანუ სადაც უნდა ჩაისვას ელემენტი)
 		int i = find_ind_inNode(this, k, positionOfFirstKey, positionOfFirstKey + n - 1);
 
 		// თუ მიმდინარე კვანძი ფოთოლია
@@ -385,31 +385,31 @@ namespace BTreeLib
 		else // თუ ეს კვანძი არ არის ფოთოლი
 		{
 			// გასაღები სადაც უნდა ყოფილიყო, თუ უფრო დიდი გასაღები დახვდა, მაშინ  მარცხნივ გაიწევს ინდექსი 
-			if (k < keys[(i + ndCapacity) % ndCapacity]) --i;
+			if (k < keys[i % ndCapacity]) --i;
 
 			// ბოლოში ხდება ჩასმა თუ არა?
 			BTreeNode<T, Compare>* childToInsertInto;
-			if (i + 1 > positionOfFirstKey + n - 1) 
+			if (i + 1 == positionOfFirstKey + n)
 				childToInsertInto = c_last;
 			else 
-				childToInsertInto  = C[(i + 1) % ndCapacity];
+				childToInsertInto = C[(i + 1) % ndCapacity];
 
 			// სადაც ჩასმა ხდება სავსეა თუ არა?
 			if (childToInsertInto->n == 2 * t - 1)
 			{
 				// თუ სავსეა, მაშინ გაყავი
-				splitChild(i + 1, childToInsertInto);
+				i = splitChild(i + 1, childToInsertInto);
 
-				childToInsertInto = C[(i + 1) % ndCapacity]; // სპლიკი შეცვლიდა ამიტომაც ვარესეტებთ!!!!!
+				childToInsertInto = C[(i + ndCapacity) % ndCapacity]; // სპლიტი შეცვლიდა ამიტომაც ვარესეტებთ!!!!!
 
 				// მარჯვენა შვილში თუ არის კანდიდატი
-				if (cmp(keys[(i + 1) % ndCapacity], k)) // keys[i + 1] < k
+				if (cmp(keys[(i + ndCapacity) % ndCapacity], k)) // keys[i + 1] < k
 				{
 					// თუ ბოლოში ხდება ჩამატება მაშინ მარჯვენა შვილი არის სათადარიგო კვანძში
-					if (i + 2 == positionOfFirstKey + n)
+					if (i + 1 == positionOfFirstKey + n)
 						childToInsertInto = c_last;
 					else
-						childToInsertInto = C[(i + 2) % ndCapacity];
+						childToInsertInto = C[(i + 1 + ndCapacity) % ndCapacity];
 				}
 			}
 			childToInsertInto->insertNonFull(k);
@@ -420,7 +420,7 @@ namespace BTreeLib
 	// შენიშვნა: y კვანძი უნდა იყოს სავსე ამ ფუნქციის გამოძახებისას
 	// აქ i არ არის რეალური ინდექსი (i % capacity არის რეალური)
 	template<typename T, typename Compare>
-	void BTreeNode<T, Compare>::splitChild(int i, BTreeNode<T, Compare> *y)
+	int BTreeNode<T, Compare>::splitChild(int i, BTreeNode<T, Compare> *y)
 	{
 		// ახალი კვანძი რომელიც შეინახავს y-ის პირველ (t-1) გასაღებს
 		BTreeNode<T, Compare> *z = new BTreeNode<T, Compare>(y->t, y->leaf);
@@ -446,11 +446,6 @@ namespace BTreeLib
 		if (n == 0)
 			c_last = y;
 		else {
-			// Since this node is going to have a new child,
-			// create space of new child
-			//for (int j = n - 1 + positionOfFirstKey; j >= i; j--)
-			//	C[(j + 1) % ndCapacity] = C[j % ndCapacity];
-
 			int st = positionOfFirstKey;
 			int fin = positionOfFirstKey + n - 1;
 
@@ -478,29 +473,25 @@ namespace BTreeLib
 					++st;
 				}
 			}
-
 		}
 
 		// მარცხენა შვილი იქნება z
 		C[(i + ndCapacity) % ndCapacity] = z;
-
-		// A key of y will move to this node. Find location of
-		// new key and move all greater keys one space ahead
-		//for (int j = n - 1 + positionOfFirstKey; j >= i; j--)
-		//	keys[(j + 1) % ndCapacity] = keys[j % ndCapacity];
-
+		
 		// Copy the middle key of y to this node
 		keys[(i + ndCapacity) % ndCapacity] = y->keys[(y->positionOfFirstKey - 1 + ndCapacity) % ndCapacity];
 
 		// Increment count of keys in this node
 		n = n + 1;
+
+		return i;
 	}
 
 	// Function to traverse all nodes in a subtree rooted with this node (needs to specify the printableValue(..) function)
 	template<typename T, typename Compare>
 	void BTreeNode<T, Compare>::traverse()
 	{
-		cout << " [ ";
+		cout << " [";
 		// There are n keys and n+1 children, travers through n keys
 		// and first n children
 		int i;
@@ -524,9 +515,9 @@ namespace BTreeLib
 	BTreeNode<T, Compare> *BTreeNode<T, Compare>::search(T k)
 	{
 		// Old code (obsolete)
-		int i = positionOfFirstKey;
-		while (i < n + positionOfFirstKey && cmp(keys[i % ndCapacity], k)) // keys[i] < k
-			i++;
+		//int i = positionOfFirstKey;
+		//while (i < n + positionOfFirstKey && cmp(keys[i % ndCapacity], k)) // keys[i] < k
+		//	i++;
 
 		// Find the first key greater than or equal to k
 		/*int left = positionOfFirstKey, right = positionOfFirstKey + n - 1, middle, i = positionOfFirstKey;
@@ -550,6 +541,12 @@ namespace BTreeLib
 				}
 		}*/
 
+
+		// ინდექსი, რომლიდანაც დაწყებული წაძვრა უნდა მოხდეს (ანუ სადაც უნდა ჩაისვას ელემენტი)
+		int i = find_ind_inNode(this, k, positionOfFirstKey, positionOfFirstKey + n - 1);
+
+		if (cmp(keys[i % ndCapacity], k)) ++i;
+
 		/*int left = positionOfFirstKey, right = positionOfFirstKey + n - 1, middle, i = 0;
 		while (left <= right)
 		{
@@ -571,7 +568,7 @@ namespace BTreeLib
 		}*/
 
 		// თუ i არ არის საზღვრებს იქით და i-ური გასაღები k-ს ტოლია
-		if (i != ndCapacity + positionOfFirstKey && keys[i % ndCapacity] == k) // keys[i] == k!
+		if (keys[i % ndCapacity] == k) // keys[i] == k!
 			return this;
 
 		// If key is not found here and this is a leaf node
@@ -579,7 +576,7 @@ namespace BTreeLib
 			return NULL;
 
 		// Go to the appropriate child
-		if (i == ndCapacity + positionOfFirstKey) // Should look in last child!
+		if (i == n + positionOfFirstKey) // Should look in last child!
 			return c_last->search(k);
 		else
 			return C[i % ndCapacity]->search(k);

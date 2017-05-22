@@ -29,7 +29,7 @@ namespace BTreeLib
 
 		int find_ind_inNode(BTreeNode<T, Compare>* x, T k, int st, int fin)
 		{
-			if (st == fin) return st;
+			if (st >= fin) return st;
 			int middle = (st + fin) / 2;
 			if (cmp(x->keys[middle % x->ndCapacity], k))  return find_ind_inNode(x, k, middle + 1, fin);
 			return find_ind_inNode(x, k, st, middle);
@@ -53,7 +53,7 @@ namespace BTreeLib
 		// A utility function to split the child y of this node. i is index
 		// of y in child array C[].  The Child y must be full when this
 		// function is called
-		void splitChild(int i, BTreeNode<T, Compare> *y);
+		int splitChild(int i, BTreeNode<T, Compare> *y);
 
 		// A wrapper function to remove the key k in subtree rooted with
 		// this node.

@@ -109,6 +109,14 @@ void checkInsertionSearchDeletion()
 		for (size_t i = 0; i < size; i++)
 			rbNodes[i] = new Node<int>(integers[i]);
 
+		// BTree (old)
+		OldTree::OldBTree oldBTree(bestT);
+		start = high_resolution_clock::now();
+		for (unsigned int j = 0; j < size; j++)
+			oldBTree.insert(integers[j]);
+		finish = high_resolution_clock::now();
+		cout << "Insert OldBTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
+
 		// BTree (insert)
 		BTree<int> tmpBTree(bestT);
 		start = high_resolution_clock::now();
@@ -126,19 +134,26 @@ void checkInsertionSearchDeletion()
 		finish = high_resolution_clock::now();
 		cout << "Insert RedBlackTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
 
-		//// BTree (search)
-		//start = high_resolution_clock::now();
-		//for (size_t j = 0; j < size; j++)
-		//	tmpBTree.search(integers[j])->findKey(integers[j]);
-		//finish = high_resolution_clock::now();
-		//cout << "Search BTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
+		// OldBTree (search)
+		start = high_resolution_clock::now();
+		for (size_t j = 0; j < size; j++)
+			oldBTree.search(integers[j])->findKey(integers[j]);
+		finish = high_resolution_clock::now();
+		cout << "Search BTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
 
-		//// RedBlackTree (search)
-		//start = high_resolution_clock::now();
-		//for (unsigned int j = 0; j < size; j++)
-		//	tmpRedBlackTree.search(integers[j]);
-		//finish = high_resolution_clock::now();
-		//cout << "Search RedBlackTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
+		// BTree (search)
+		start = high_resolution_clock::now();
+		for (size_t j = 0; j < size; j++)
+			tmpBTree.search(integers[j])->findKey(integers[j]);
+		finish = high_resolution_clock::now();
+		cout << "Search BTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
+
+		// RedBlackTree (search)
+		start = high_resolution_clock::now();
+		for (unsigned int j = 0; j < size; j++)
+			tmpRedBlackTree.search(integers[j]);
+		finish = high_resolution_clock::now();
+		cout << "Search RedBlackTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
 
 		//// BTree (delete)
 		//start = high_resolution_clock::now();
