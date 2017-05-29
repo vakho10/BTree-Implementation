@@ -61,7 +61,7 @@ namespace BTreeLib
 			if (root->leaf)
 				root = NULL;
 			else
-				root = root->C[0];
+				root = root->C[root->positionOfFirstKey];
 
 			// Free the old root
 			delete tmp;
