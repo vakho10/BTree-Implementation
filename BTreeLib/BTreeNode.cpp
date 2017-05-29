@@ -1,5 +1,10 @@
 ﻿#include "BTreeNode.h"
 
+#include <string>
+#include <sstream>
+
+using namespace std;
+
 namespace BTreeLib
 {
 	template<typename T, typename Compare>
@@ -489,9 +494,10 @@ namespace BTreeLib
 
 	// Function to traverse all nodes in a subtree rooted with this node (needs to specify the printableValue(..) function)
 	template<typename T, typename Compare>
-	void BTreeNode<T, Compare>::traverse()
+	string BTreeNode<T, Compare>::traverse()
 	{
-		cout << " [";
+		stringstream result; 
+		result << " [";
 		// There are n keys and n+1 children, travers through n keys
 		// and first n children
 		int i;
@@ -500,14 +506,15 @@ namespace BTreeLib
 			// If this is not leaf, then before printing key[i],
 			// traverse the subtree rooted with child C[i].
 			if (leaf == false)
-				C[(i + ndCapacity) % ndCapacity]->traverse();
-			cout << keys[(i + ndCapacity) % ndCapacity] << " ";
+				result << C[(i + ndCapacity) % ndCapacity]->traverse();
+			result << keys[(i + ndCapacity) % ndCapacity] << " ";
 		}
 
 		// Print the subtree rooted with last child
 		if (leaf == false) // traverse last child 
-			c_last->traverse();
-		cout << "] ";
+			result << c_last->traverse();
+		result << "] ";
+		return result.str();
 	}
 
 	// Function to search key k in subtree rooted with this node

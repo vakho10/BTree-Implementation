@@ -36,7 +36,7 @@ namespace BTreeLib
 		}
 
 		// A function to traverse all nodes in a subtree rooted with this node
-		void traverse();
+		std::string traverse();
 
 		// A function to search a key in subtree rooted with this node.
 		BTreeNode<T, Compare> *search(T k);   // returns NULL if k is not present.

@@ -46,10 +46,10 @@ int main()
 		t2->insert(numbers[i]);
 	}
 
-	t1->traverse();
-	cout << endl;
-	t2->traverse();
-	cout << endl;
+	std::string result1 = t1->traverse();
+	cout << result1 << endl;
+	std::string result2 = t2->traverse();
+	cout << result2 << endl;
 	
 	for (int i = 1; i <= size; i++)
 	{

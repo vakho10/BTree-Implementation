@@ -53,13 +53,22 @@ namespace TestSuite
 				
 				auto node = t2->search(i);				
 				int index2 = node->findKey(i) - node->getPositionOfFirstKey(); // ინდექსირების გასწორება
+				
 				Assert::AreEqual(index1, index2);
 			}
+			Assert::AreEqual(t1->traverse(), t2->traverse()); // შეგვიძლია გადავლის შედეგით შემოწმებაც!
 		}
 
 		TEST_METHOD(TestRemove)
 		{
-			Assert::Fail(L"Test not implemented yet!");			
+			// The traverse function has the same output for the both of these B-trees!
+			for (int i = 1; i <= numberOfElements; i++)
+			{
+				t1->remove(i);
+				t2->remove(i);
+
+				Assert::AreEqual(t1->traverse(), t2->traverse());
+			}
 		}
 	};
 }

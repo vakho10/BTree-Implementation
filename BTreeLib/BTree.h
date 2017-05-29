@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <sstream>
 #include <functional>
 
 #include "BTreeNode.h"
@@ -23,9 +24,11 @@ namespace BTreeLib
 		}
 
 		// function to traverse the tree
-		void traverse()
+		std::string traverse()
 		{
-			if (root != NULL) root->traverse();
+			if (root != NULL) 
+				return root->traverse();
+			return "";
 		}
 
 		// function to search a key in this tree

@@ -1,6 +1,8 @@
 #pragma once
 
 #include <iostream>
+#include <string>
+#include <sstream>
 
 using namespace std;
 
@@ -20,7 +22,7 @@ namespace OldTree
 		OldBTreeNode(int _t, bool _leaf);   // Constructor
 
 										 // A function to traverse all nodes in a subtree rooted with this node
-		void traverse();
+		string traverse();
 
 		// A function to search a key in subtree rooted with this node.
 		OldBTreeNode *search(int k);   // returns NULL if k is not present.
@@ -93,9 +95,12 @@ namespace OldTree
 			t = _t;
 		}
 
-		void traverse()
+		string traverse()
 		{
-			if (root != NULL) root->traverse();
+			if (root != NULL) 
+				return root->traverse();
+
+			return "";
 		}
 
 		// function to search a key in this tree
@@ -539,9 +544,10 @@ namespace OldTree
 	}
 
 	// Function to traverse all nodes in a subtree rooted with this node
-	void OldBTreeNode::traverse()
+	string OldBTreeNode::traverse()
 	{
-		cout << " [";
+		stringstream result;
+		result << " [";
 		// There are n keys and n+1 children, travers through n keys
 		// and first n children
 		int i;
@@ -550,14 +556,15 @@ namespace OldTree
 			// If this is not leaf, then before printing key[i],
 			// traverse the subtree rooted with child C[i].
 			if (leaf == false)
-				C[i]->traverse();
-			cout << keys[i] << " ";
+				result << C[i]->traverse();
+			result << keys[i] << " ";
 		}
 
 		// Print the subtree rooted with last child
 		if (leaf == false)
-			C[i]->traverse();
-		cout << "] ";
+			result << C[i]->traverse();
+		result << "] ";
+		return result.str();
 	}
 
 	// Function to search key k in subtree rooted with this node
