@@ -151,7 +151,6 @@
     <ClInclude Include="BTreePrinter.h" />
     <ClInclude Include="OldBTree.h" />
     <ClInclude Include="RB.h" />
-    <ClInclude Include="RootNullException.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BTree.cpp" />
