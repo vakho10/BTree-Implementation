@@ -14,7 +14,7 @@ namespace BTreeLib
 		int t;						// Minimum degree (defines the range for number of keys)
 
 		T *keys;							  // An array of keys (objects)
-		BTreeNode<T, Compare> **C;			  // შვილებიზე მიმთითებლების მასივი (გასაღებების რაოდენობის ტოლი)
+		BTreeNode<T, Compare> **C;			  // შვილებზე მიმთითებლების მასივი (გასაღებების რაოდენობის ტოლი)
 		BTreeNode<T, Compare>* c_last = NULL; // ბოლოს კვანძის მარჯვენა შვილი (მაშინ ვიყენებთ როდესაც კვანძი სავსეა)
 
 		int positionOfFirstKey;		// კვანძში პირველი გასაღების ინდექსი
@@ -88,8 +88,8 @@ namespace BTreeLib
 		void borrowFromNext(int idx);
 
 		// A function to merge idx-th child of the node with (idx+1)th child of
-		// the node
-		void merge(int idx);
+		// the node. returns true if merge happend in last two children!
+		bool merge(int idx);
 
 		// Make BTree friend of this so that we can access private members of this
 		// class in BTree functions
