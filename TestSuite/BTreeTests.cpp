@@ -24,14 +24,14 @@ namespace TestSuite
 	{
 	public:
 
-		const int numberOfElements = 10000;
+		const int numberOfElements = 500;
+		int *numbers = new int[numberOfElements];
 
 		OldBTree* t1 = new OldBTree(3);
 		BTree<int>* t2 = new BTree<int>(3);
 
 		BTreeTests()
 		{			
-			int *numbers = new int[numberOfElements];
 			for (int i = 1; i <= numberOfElements; i++)
 			{
 				numbers[i - 1] = i; // ვიღებთ განსხვავებულ რიცხვებს!
@@ -47,6 +47,7 @@ namespace TestSuite
 
 		TEST_METHOD(TestSearch)
 		{
+			std::random_shuffle(numbers, numbers + numberOfElements);
 			for (int i = 1; i <= numberOfElements; i++)
 			{				
 				int index1 = t1->search(i)->findKey(i);								

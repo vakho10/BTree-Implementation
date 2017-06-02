@@ -77,7 +77,7 @@ namespace BTreeLib
 		if (keys[idx % ndCapacity] < k) idx++; // ინდექსის გასწორება!
 					
 		// The key to be removed is present in this node
-		if (idx < positionOfFirstKey + n && keys[(idx + ndCapacity) % ndCapacity] == k) // keys[idx] == k!
+		if (idx < positionOfFirstKey + n && keys[idx % ndCapacity] == k) // keys[idx] == k!
 		{
 			// If the node is a leaf node - removeFromLeaf is called
 			// Otherwise, removeFromNonLeaf function is called
@@ -86,7 +86,7 @@ namespace BTreeLib
 			else
 				removeFromNonLeaf(idx);
 		}
-		else
+		else // მიმდინარე კვანძში თუ ვერ მოიძებნა
 		{
 			// If this node is a leaf node, then the key is not present in tree
 			if (leaf)
@@ -98,9 +98,9 @@ namespace BTreeLib
 			// The key to be removed is present in the sub-tree rooted with this node
 			// The flag indicates whether the key is present in the sub-tree rooted
 			// with the last child of this node
-			bool flag = ((idx == n + positionOfFirstKey) ? true : false);
+			bool flag = ((idx >= n - 1 + positionOfFirstKey) ? true : false); // ბოლოა ან ბოლოს შემდეგი
 
-			BTreeNode<T, Compare>* idxChild = flag ? c_last : C[idx % ndCapacity];
+			BTreeNode<T, Compare>* idxChild = (idx >= n + positionOfFirstKey) ? c_last : C[idx % ndCapacity]; // თუ ბოლო შვილია 
 
 			// If the child where the key is supposed to exist has less that t keys,
 			// we fill that child
@@ -110,10 +110,10 @@ namespace BTreeLib
 			// If the last child has been merged, it must have merged with the previous
 			// child and so we recurse on the (idx-1)th child. Else, we recurse on the
 			// (idx)th child which now has atleast t keys
-			if (flag && idx > n + positionOfFirstKey)
-				C[(idx - 1) % ndCapacity]->remove(k);
+			if (flag && idx > n - 1 + positionOfFirstKey)
+				c_last->remove(k);
 			else
-				idxChild->remove(k);
+				C[idx % ndCapacity]->remove(k);
 		}
 		return;
 	}
@@ -138,7 +138,7 @@ namespace BTreeLib
 		T k = keys[idx % ndCapacity];
 
 		// წინასწარ განსაზღვრე მარჯვენა შვილი არის თუ არა ბოლო
-		BTreeNode<T, Compare>* rightChild = (idx + 1 != positionOfFirstKey + n) ? C[(idx + 1) % ndCapacity] : c_last;
+		BTreeNode<T, Compare>* rightChild = (idx + 1 >= positionOfFirstKey + n) ? c_last : C[(idx + 1) % ndCapacity];
 		
 		// If the child that precedes k (C[idx]) has atleast t keys,
 		// find the predecessor 'pred' of k in the subtree rooted at
@@ -168,14 +168,11 @@ namespace BTreeLib
 		// Now C[idx] contains 2t-1 keys
 		// Free C[idx+1] and recursively delete k from C[idx]
 		else
-		{		
-			bool wasLast = merge(idx);
-			
+		{					
 			// თუ ბოლოები შეერთდა
-			if (wasLast) {
-				c_last = C[(positionOfFirstKey + n) % ndCapacity]; 
+			if (merge(idx))
 				c_last->remove(k);
-			} else
+			else
 				C[idx % ndCapacity]->remove(k);
 		}
 		return;
@@ -210,7 +207,7 @@ namespace BTreeLib
 	template<typename T, typename Compare>
 	void BTreeNode<T, Compare>::fill(int idx)
 	{
-		bool flag = ((idx == n + positionOfFirstKey) ? true : false);
+		bool flag = ((idx + 1 >= n + positionOfFirstKey) ? true : false);
 		// TODO speed up!
 		BTreeNode<T, Compare>* rightChild = flag ? c_last : C[(idx + 1) % ndCapacity];
 
@@ -229,15 +226,12 @@ namespace BTreeLib
 		// Otherwise merge it with its next sibling
 		else
 		{
-			bool mergeHappenedInLastTwo = false;
-
 			if (idx != positionOfFirstKey + n)
-				mergeHappenedInLastTwo = merge(idx);
+				merge(idx);
 			else
-				mergeHappenedInLastTwo = merge(idx - 1);
-			
-			if (mergeHappenedInLastTwo) c_last = C[(positionOfFirstKey + n) % ndCapacity]; // ბოლო შვილის გასწორება
-			
+				merge(idx - 1);
+
+			// merge თავად ასწორებს ბოლო შვილს!
 		}
 		return;
 	}
@@ -261,18 +255,18 @@ namespace BTreeLib
 		// If C[idx] is not a leaf, move all its child pointers one step ahead
 		if (!child->leaf)
 		{
-			for (int i = child->positionOfFirstKey + child->n - 1; i >= positionOfFirstKey; --i)
+			for (int i = child->positionOfFirstKey + child->n - 1; i >= child->positionOfFirstKey; --i)
 				child->C[(i + 1) % ndCapacity] = child->C[i % ndCapacity];
 		}
 
 		// Setting child's first key equal to keys[idx-1] from the current node
-		child->keys[child->positionOfFirstKey % ndCapacity] = keys[(idx - 1) % ndCapacity];
+		child->keys[child->positionOfFirstKey % ndCapacity] = keys[(idx - 1 + ndCapacity) % ndCapacity];
 
 		// Moving sibling's last child as C[idx]'s first child
 		if (!leaf) {
 			child->C[child->positionOfFirstKey] = sibling->c_last;
 			
-			sibling->c_last = sibling->C[(sibling->positionOfFirstKey + sibling->n - 1) % ndCapacity]; // sibling's last child changes!
+			sibling->c_last = sibling->C[(sibling->positionOfFirstKey + sibling->n - 1 + ndCapacity) % ndCapacity]; // sibling's last child changes!
 		}
 
 		// Moving the key from the sibling to the parent
@@ -285,8 +279,7 @@ namespace BTreeLib
 		return;
 	}
 
-	// A function to borrow a key from the C[idx+1] and place
-	// it in C[idx]
+	// A function to borrow a key from the C[idx+1] and place it in C[idx]
 	template<typename T, typename Compare>
 	void BTreeNode<T, Compare>::borrowFromNext(int idx)
 	{
@@ -300,22 +293,25 @@ namespace BTreeLib
 		// into C[idx]
 		if (!(child->leaf)) {
 			child->C[(child->positionOfFirstKey + child->n) % ndCapacity] = child->c_last; // Move the (old) last child to real child array
-			child->c_last = sibling->C[positionOfFirstKey];
+			child->c_last = sibling->C[sibling->positionOfFirstKey];
 		}
 
 		//The first key from sibling is inserted into keys[idx]
 		keys[idx % ndCapacity] = sibling->keys[sibling->positionOfFirstKey];
+		
+		// Move siblings start one step forward
+		sibling->positionOfFirstKey = (sibling->positionOfFirstKey + 1) % ndCapacity;
 
 		// Moving all keys in sibling one step behind
-		for (int i = 1 + sibling->positionOfFirstKey; i < sibling->n + sibling->positionOfFirstKey; ++i)
-			sibling->keys[(i - 1) % ndCapacity] = sibling->keys[i % ndCapacity];
+		/*for (int i = 1 + sibling->positionOfFirstKey; i < sibling->n + sibling->positionOfFirstKey; ++i)
+			sibling->keys[(i - 1) % ndCapacity] = sibling->keys[i % ndCapacity];*/
 
 		// Moving the child pointers one step behind
-		if (!sibling->leaf)
+		/*if (!sibling->leaf)
 		{
 			for (int i = sibling->positionOfFirstKey + 1; i < sibling->positionOfFirstKey + sibling->n; ++i)
 				sibling->C[(i - 1) % ndCapacity] = sibling->C[i % ndCapacity];
-		}
+		}*/
 
 		// Increasing and decreasing the key count of C[idx] and C[idx+1]
 		// respectively
@@ -331,7 +327,7 @@ namespace BTreeLib
 	bool BTreeNode<T, Compare>::merge(int idx)
 	{
 		// flag says that right child is the last one
-		bool flag = ((idx + 1 == n + positionOfFirstKey) ? true : false);
+		bool flag = ((idx + 1 >= n + positionOfFirstKey) ? true : false);
 
 		BTreeNode<T, Compare> *child = C[idx % ndCapacity];
 		BTreeNode<T, Compare> *sibling = flag ? c_last : C[(idx + 1) % ndCapacity];
@@ -368,6 +364,11 @@ namespace BTreeLib
 		// Updating the key count of child and the current node
 		child->n += sibling->n + 1;
 		n--;
+
+		// თუ ბოლოები შეერთდა, მაშინ შეერთების შემდეგ 
+		// მიმდინარეს ბოლო შვილი იქნება child-ი
+		if (flag)
+			c_last = child;
 
 		// Freeing the memory occupied by sibling
 		delete(sibling);
