@@ -2,7 +2,7 @@
 // Template class separation workarounds described here: https://www.codeproject.com/Articles/48575/How-to-define-a-template-class-in-a-h-file-and-imp
 // For time computation we're using chrono library: http://en.cppreference.com/w/cpp/chrono
 
-#define TEN_MILLION 10000000
+#define TEN_MILLION 500
 
 #include <iostream>
 #include <string>
@@ -103,7 +103,7 @@ void testAndDetermineBestT()
 void checkInsertionSearchDeletion()
 {
 	cout << "Testing insertions:" << endl;
-	for (unsigned int size = 1000000; size <= TEN_MILLION; size *= 10)
+	for (unsigned int size = 500; size <= TEN_MILLION; size *= 10)
 	{
 		rbNodes = new Node<int>*[size];
 		for (size_t i = 0; i < size; i++)
@@ -139,7 +139,7 @@ void checkInsertionSearchDeletion()
 		for (size_t j = 0; j < size; j++)
 			oldBTree.search(integers[j])->findKey(integers[j]);
 		finish = high_resolution_clock::now();
-		cout << "Search BTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
+		cout << "Search OldBTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
 
 		// BTree (search)
 		start = high_resolution_clock::now();
@@ -155,19 +155,30 @@ void checkInsertionSearchDeletion()
 		finish = high_resolution_clock::now();
 		cout << "Search RedBlackTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
 
-		//// BTree (delete)
-		//start = high_resolution_clock::now();
-		//for (unsigned int j = 0; j < size; j++)
-		//	tmpBTree.remove(integers[j]);
-		//finish = high_resolution_clock::now();
-		//cout << "Delete BTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
+		// OldBTree (delete)
+		start = high_resolution_clock::now();
+		for (unsigned int j = 0; j < size; j++)
+			oldBTree.remove(integers[j]);
+		finish = high_resolution_clock::now();
+		cout << "Delete OldBTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
 
-		//// RedBlackTree (delete)
-		//start = high_resolution_clock::now();
-		//for (size_t j = 0; j < size; j++) {
-		//	tmpRedBlackTree.RB_delete(rbNodes[j]);
-		//}
-		//finish = high_resolution_clock::now();
-		//cout << "Delete RedBlackTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
+		// BTree (delete)
+		//cout << tmpBTree.traverse() << endl;
+		start = high_resolution_clock::now();
+		for (unsigned int j = 0; j < size; j++) {
+			tmpBTree.remove(integers[j]);
+			cout << "Removing : " << integers[j] << endl;
+			//cout << tmpBTree.traverse() << endl;
+		}
+		finish = high_resolution_clock::now();
+		cout << "Delete BTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
+
+		// RedBlackTree (delete)
+		start = high_resolution_clock::now();
+		for (size_t j = 0; j < size; j++) {
+			tmpRedBlackTree.RB_delete(rbNodes[j]);
+		}
+		finish = high_resolution_clock::now();
+		cout << "Delete RedBlackTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
 	}
 }

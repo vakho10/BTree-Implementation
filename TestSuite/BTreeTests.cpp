@@ -24,7 +24,7 @@ namespace TestSuite
 	{
 	public:
 
-		const int numberOfElements = 500;
+		const int numberOfElements = 1000;
 		int *numbers = new int[numberOfElements];
 
 		OldBTree* t1 = new OldBTree(3);
@@ -32,9 +32,8 @@ namespace TestSuite
 
 		BTreeTests()
 		{			
-			for (int i = 1; i <= numberOfElements; i++)
-			{
-				numbers[i - 1] = i; // ვიღებთ განსხვავებულ რიცხვებს!
+			for (size_t i = 0; i < numberOfElements; i++) {
+				numbers[i] = i - (numberOfElements / 2);
 			}
 			std::random_shuffle(numbers, numbers + numberOfElements); // აურიე რიცხვები უკეთესი ტესტირებისთვის
 			 
