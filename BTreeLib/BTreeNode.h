@@ -23,8 +23,10 @@ namespace BTreeLib
 
 	public:
 		BTreeNode(int _t, bool _leaf, Compare& _cmp = Compare());   // Constructor
-		~BTreeNode();	
+		~BTreeNode();
 
+		T* getKeys() { return this->keys; }
+		int getCapacity() { return this->ndCapacity; }
 		int getPositionOfFirstKey() { return positionOfFirstKey; }
 
 		int find_ind_inNode(BTreeNode<T, Compare>* x, T k, int st, int fin)
@@ -77,7 +79,7 @@ namespace BTreeLib
 
 		// A function to fill up the child node present in the idx-th
 		// position in the C[] array if that child has less than t-1 keys
-		void fill(int idx);
+		int fill(int idx);
 
 		// A function to borrow a key from the C[idx-1]-th node and place
 		// it in C[idx]th node
@@ -89,7 +91,7 @@ namespace BTreeLib
 
 		// A function to merge idx-th child of the node with (idx+1)th child of
 		// the node. returns true if merge happend in last two children!
-		bool merge(int idx);
+		int merge(int idx);
 
 		// Make BTree friend of this so that we can access private members of this
 		// class in BTree functions

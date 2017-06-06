@@ -24,7 +24,7 @@ namespace TestSuite
 	{
 	public:
 
-		const int numberOfElements = 500;
+		const int numberOfElements = 1000;
 		int *numbers = new int[numberOfElements];
 
 		OldBTree* t1 = new OldBTree(3);
@@ -32,9 +32,9 @@ namespace TestSuite
 
 		BTreeTests()
 		{			
-			for (int i = 1; i <= numberOfElements; i++)
+			for (int i = 0; i < numberOfElements; i++)
 			{
-				numbers[i - 1] = i; // ვიღებთ განსხვავებულ რიცხვებს!
+				numbers[i] = i - (numberOfElements / 2);
 			}
 			std::random_shuffle(numbers, numbers + numberOfElements); // აურიე რიცხვები უკეთესი ტესტირებისთვის
 			 
@@ -48,25 +48,27 @@ namespace TestSuite
 		TEST_METHOD(TestSearch)
 		{
 			std::random_shuffle(numbers, numbers + numberOfElements);
-			for (int i = 1; i <= numberOfElements; i++)
-			{				
-				int index1 = t1->search(i)->findKey(i);								
+			for (int i = 0; i < numberOfElements; i++)
+			{
+				auto node = t2->search(numbers[i]);
 				
-				auto node = t2->search(i);				
-				int index2 = node->findKey(i) - node->getPositionOfFirstKey(); // ინდექსირების გასწორება
-				
+				int index1 = (t1->search(numbers[i])->findKey(numbers[i]) + node->getPositionOfFirstKey()) % node->getCapacity();
+				int index2 = node->findKey(numbers[i]) % node->getCapacity();
+
 				Assert::AreEqual(index1, index2);
 			}
-			Assert::AreEqual(t1->traverse(), t2->traverse()); // შეგვიძლია გადავლის შედეგით შემოწმებაც!
+
+			Assert::AreEqual(t1->traverse(), t2->traverse()); // შეგვიძლია გადავლით შემოწმებაც!
 		}
 
 		TEST_METHOD(TestRemove)
 		{
-			// The traverse function has the same output for the both of these B-trees!
-			for (int i = 1; i <= numberOfElements; i++)
+			std::random_shuffle(numbers, numbers + numberOfElements);
+
+			for (int i = 0; i < numberOfElements; i++)
 			{
-				t1->remove(i);
-				t2->remove(i);
+				t1->remove(numbers[i]);
+				t2->remove(numbers[i]);
 
 				Assert::AreEqual(t1->traverse(), t2->traverse());
 			}
