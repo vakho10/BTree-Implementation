@@ -31,7 +31,7 @@ using namespace OldTree;
 // Globals:
 time_point<high_resolution_clock> start, finish; // (C++11 Style) Chrono start and end time points.
 int* integers;
-int bestT = 3; // Has been checked previously
+int bestT = 64; // Has been checked previously
 Node<int>** rbNodes;
 
 // Prototypes:
