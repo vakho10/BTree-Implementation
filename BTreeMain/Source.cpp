@@ -55,10 +55,10 @@ int main()
 void generateAndFillIntegers()
 {
 	integers = new int[TEN_MILLION];
-	for (size_t i = 0; i < TEN_MILLION; i++) {
+	for (int i = TEN_MILLION - 1; i >= 0; i--) {
 		integers[i] = i - (TEN_MILLION / 2);
 	}
-	random_shuffle(integers, integers + TEN_MILLION);
+	//random_shuffle(integers, integers + TEN_MILLION);
 }
 
 void testAndDetermineBestT()
