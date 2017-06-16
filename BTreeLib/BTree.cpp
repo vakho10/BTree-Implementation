@@ -9,7 +9,7 @@ namespace BTreeLib
 		{
 			// მეხსიერების გამოყოფა ფესვისთვის
 			root = new BTreeNode<T, Compare>(t, true);
-			root->keys[0] = k;  // გასაღების ჩასმა (0 ინდექსზე)
+			root->pairs[0] = new NodePair<T, Compare>(k); // გასაღების ჩასმა (0 ინდექსზე)
 			root->n = 1;  // გასაღებების რაოდენობის განახლება
 			root->positionOfFirstKey = 0;
 		}
@@ -21,17 +21,17 @@ namespace BTreeLib
 				BTreeNode<T, Compare> *s = new BTreeNode<T, Compare>(t, false);
 
 				// გახადე ძველი ფესვი ახალი ფესვის, s-ის შვილი
-				s->C[0] = root;
+				s->pairs[0]->setChild(root);
 
 				// გაყავი ძველი ფესვი და გადაიტანე 1 გასაღები ახალ ფესვში
 				s->splitChild(0, root);
 
 				// ახალ ფესვს ახლა ორი შვილი ჰყავს. გადაწყვიტე 
 				// ამ ორიდან რომელს ექნება ახალი გასაღები
-				if (cmp(s->keys[0], k)) // s->keys[0] < k
+				if (cmp(s->pairs[0]->getKey(), k)) // s->keys[0] < k
 					s->c_last->insertNonFull(k);
 				else 
-					s->C[0]->insertNonFull(k);
+					s->pairs[0]->getChild()->insertNonFull(k);
 
 				// ვცვლით ფესვს ახლით
 				root = s;
@@ -61,7 +61,7 @@ namespace BTreeLib
 			if (root->leaf)
 				root = NULL;
 			else
-				root = root->C[root->positionOfFirstKey];
+				root = root->pairs[root->positionOfFirstKey]->getChild();
 
 			// Free the old root
 			delete tmp;

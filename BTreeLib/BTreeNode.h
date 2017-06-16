@@ -13,15 +13,19 @@ namespace BTreeLib
 	class NodePair
 	{
 	private:
-		T *key;
+		T key;
 		BTreeNode<T, Compare> *child;
 		Compare cmp;
 	public:
-		NodePair(T* _key, BTreeNode<T, Compare>* _child, Compare& _cmp = Compare())
+		NodePair(T _key, Compare& _cmp = Compare())
 		{
 			key = _key;
-			child = _child;
 			cmp = _cmp;
+		}
+
+		NodePair(T _key, BTreeNode<T, Compare>* _child, Compare& _cmp = Compare()) : NodePair(_key, _cmp) 
+		{
+			child = _child;
 		}
 
 		~NodePair() 
@@ -30,10 +34,10 @@ namespace BTreeLib
 			delete child; child = NULL;
 		}
 
-		T* getKey() { return key; }
-		T* getChild() { return child; }
+		T getKey() { return key; }
+		BTreeNode<T, Compare>* getChild() { return child; }
 
-		void setKey(T* _key) { key = _key; }
+		void setKey(T _key) { key = _key; }
 		void setChild(BTreeNode<T, Compare>* _child) { child = _child; }
 	};
 
@@ -45,9 +49,7 @@ namespace BTreeLib
 		bool leaf;					// Is true when node is leaf. Otherwise false
 		int t;						// Minimum degree (defines the range for number of keys)
 
-		//NodePair<T, Compare>** pairs; // Array of pairs consisting of keys and children
-		T *keys;							  // An array of keys (objects)
-		BTreeNode<T, Compare> **C;			  // შვილებზე მიმთითებლების მასივი (გასაღებების რაოდენობის ტოლი)
+		NodePair<T, Compare>** pairs; // Array of pairs consisting of keys and children
 		BTreeNode<T, Compare>* c_last = NULL; // ბოლოს კვანძის მარჯვენა შვილი (მაშინ ვიყენებთ როდესაც კვანძი სავსეა)
 
 		int positionOfFirstKey;		// კვანძში პირველი გასაღების ინდექსი
@@ -66,7 +68,7 @@ namespace BTreeLib
 		{
 			if (st >= fin) return st;
 			int middle = (st + fin) / 2;
-			if (cmp(x->keys[middle % x->ndCapacity], k))  return find_ind_inNode(x, k, middle + 1, fin);
+			if (cmp(x->pairs[middle % x->ndCapacity]->getKey(), k))  return find_ind_inNode(x, k, middle + 1, fin);
 			return find_ind_inNode(x, k, st, middle);
 		}
 
