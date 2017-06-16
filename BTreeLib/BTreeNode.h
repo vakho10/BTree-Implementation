@@ -5,6 +5,38 @@
 
 namespace BTreeLib
 {
+	// Should be visible to NodePair!
+	template<typename T, typename Compare>
+	class BTreeNode;
+
+	template<typename T, typename Compare = std::less<T>>
+	class NodePair
+	{
+	private:
+		T *key;
+		BTreeNode<T, Compare> *child;
+		Compare cmp;
+	public:
+		NodePair(T* _key, BTreeNode<T, Compare>* _child, Compare& _cmp = Compare())
+		{
+			key = _key;
+			child = _child;
+			cmp = _cmp;
+		}
+
+		~NodePair() 
+		{
+			delete key; key = NULL;
+			delete child; child = NULL;
+		}
+
+		T* getKey() { return key; }
+		T* getChild() { return child; }
+
+		void setKey(T* _key) { key = _key; }
+		void setChild(BTreeNode<T, Compare>* _child) { child = _child; }
+	};
+
 	template<typename T, typename Compare = std::less<T>>
 	class BTreeNode
 	{
@@ -13,6 +45,7 @@ namespace BTreeLib
 		bool leaf;					// Is true when node is leaf. Otherwise false
 		int t;						// Minimum degree (defines the range for number of keys)
 
+		//NodePair<T, Compare>** pairs; // Array of pairs consisting of keys and children
 		T *keys;							  // An array of keys (objects)
 		BTreeNode<T, Compare> **C;			  // შვილებზე მიმთითებლების მასივი (გასაღებების რაოდენობის ტოლი)
 		BTreeNode<T, Compare>* c_last = NULL; // ბოლოს კვანძის მარჯვენა შვილი (მაშინ ვიყენებთ როდესაც კვანძი სავსეა)
