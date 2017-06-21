@@ -58,7 +58,7 @@ void generateAndFillIntegers()
 	for (int i = TEN_MILLION - 1; i >= 0; i--) {
 		integers[i] = i - (TEN_MILLION / 2);
 	}
-	//random_shuffle(integers, integers + TEN_MILLION);
+	random_shuffle(integers, integers + TEN_MILLION);
 }
 
 void testAndDetermineBestT()
