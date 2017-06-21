@@ -250,17 +250,12 @@ namespace BTreeLib
 		// პოზიციის გათავისუფლება პირველი ელემენტისთვის
 		child->positionOfFirstKey = (child->positionOfFirstKey - 1 + ndCapacity) % ndCapacity;
 
-		// Setting child's first key equal to keys[idx-1] from the current node
-		child->pairs[child->positionOfFirstKey % ndCapacity]->setKey(pairs[(idx - 1 + ndCapacity) % ndCapacity]->getKey());
-
+		// Setting child's first key equal to keys[idx-1] from the current node &&
 		// Moving sibling's last child as C[idx]'s first child
-		if (!leaf)
-		{
-			child->pairs[child->positionOfFirstKey]->setChild(sibling->c_last);
+		child->pairs[child->positionOfFirstKey % ndCapacity] = new NodePair<T, Compare>(pairs[(idx - 1 + ndCapacity) % ndCapacity]->getKey(), sibling->c_last);
 
-			// sibling's last child changes!
-			sibling->c_last = sibling->pairs[(sibling->positionOfFirstKey + sibling->n - 1 + ndCapacity) % ndCapacity]->getChild();
-		}
+		// sibling's last child changes! (leaf won't be affected!)
+		sibling->c_last = sibling->pairs[(sibling->positionOfFirstKey + sibling->n - 1 + ndCapacity) % ndCapacity]->getChild();
 
 		// Moving the key from the sibling to the parent
 		// This reduces the number of keys in the sibling
@@ -280,7 +275,7 @@ namespace BTreeLib
 		BTreeNode<T, Compare> *sibling = (idx + 1 != positionOfFirstKey + n) ? pairs[(idx + 1) % ndCapacity]->getChild() : c_last;
 
 		// keys[idx] is inserted as the last key in C[idx]
-		child->pairs[(child->positionOfFirstKey + child->n) % ndCapacity]->setKey(pairs[idx % ndCapacity]->getKey());
+		child->pairs[(child->positionOfFirstKey + child->n) % ndCapacity] = new NodePair<T, Compare>(pairs[idx % ndCapacity]->getKey());
 
 		// Sibling's first child is inserted as the last child
 		// into C[idx]
@@ -316,26 +311,15 @@ namespace BTreeLib
 		BTreeNode<T, Compare> *sibling = flag ? c_last : pairs[(idx + 1) % ndCapacity]->getChild();
 
 		// Pulling a key from the current node and inserting it into (t-1)th
-		// position of C[idx]
-		child->pairs[(child->positionOfFirstKey + t - 1) % ndCapacity]->setKey(
-			pairs[idx % ndCapacity]->getKey());
+		// position of C[idx] && inserting c_last into child position!
+		child->pairs[(child->positionOfFirstKey + t - 1) % ndCapacity] = new NodePair<T, Compare>(pairs[idx % ndCapacity]->getKey(), child->c_last); // faster!
 
-		// Copying the keys from C[idx+1] to C[idx] at the end
+		// Copying the keys from C[idx+1] to C[idx] at the end &&
+		// Copying the child pointers from C[idx+1] to C[idx] (won't change anything for leaf right?)
 		for (int i = 0; i < sibling->n; ++i)
-			child->pairs[(i + t + child->positionOfFirstKey) % ndCapacity]->setKey(
-				sibling->pairs[(i + sibling->positionOfFirstKey) % ndCapacity]->getKey());
+			child->pairs[(i + t + child->positionOfFirstKey) % ndCapacity] = sibling->pairs[(i + sibling->positionOfFirstKey) % ndCapacity];
 
-		// Copying the child pointers from C[idx+1] to C[idx]
-		if (!child->leaf)
-		{
-			child->pairs[(child->positionOfFirstKey + t - 1) % ndCapacity]->setChild(child->c_last); // Move last child to its real position
-
-			for (int i = 0; i < sibling->n; ++i)
-				child->pairs[(i + t + child->positionOfFirstKey) % ndCapacity]->setChild(
-					sibling->pairs[(i + sibling->positionOfFirstKey) % ndCapacity]->getChild());
-
-			child->c_last = sibling->c_last;
-		}
+		child->c_last = sibling->c_last; // Won't affect anything for leaf node!
 
 		int st = positionOfFirstKey;
 		int fin = positionOfFirstKey + n - 1;
@@ -357,7 +341,7 @@ namespace BTreeLib
 				++i;
 			}
 
-			pairs[idx]->setChild(backupTmp); // Restore overwritten child!
+			pairs[idx % ndCapacity]->setChild(backupTmp); // Restore overwritten child!
 
 			if (flag)
 				c_last = child;

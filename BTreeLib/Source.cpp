@@ -62,7 +62,7 @@ int main()
 		cout << index1 << ", " << index2 - node->getPositionOfFirstKey() << " => " << (index1 == (index2 - node->getPositionOfFirstKey())) << endl;
 	}
 
-	/*cout << t1->traverse() << endl;
+	cout << t1->traverse() << endl;
 	cout << t2->traverse() << endl;
 
 	std::random_shuffle(numbers, numbers + size);
@@ -77,6 +77,6 @@ int main()
 		cout << t1->traverse() << endl;
 		cout << t2->traverse() << endl;
 		cout << (t1->traverse() == t2->traverse()) << endl;
-	}*/
+	}
 
 }
