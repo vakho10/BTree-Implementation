@@ -46,23 +46,23 @@ int main()
 		t2->insert(numbers[i]);
 	}
 
-	/*cout << t1->traverse() << endl;
-	cout << t2->traverse() << endl;*/
-
-	//for (int i = 0; i < size; i++)
-	//{
-	//	auto node = t2->search(numbers[i]);
-	//	int index2 = node->findKey(numbers[i]);
-	//	int index1 = t1->search(numbers[i])->findKey(numbers[i]);
-
-	//	// Correct index1
-	//	index1 = (node->getPositionOfFirstKey() + index1) % node->getCapacity();
-
-	//	cout << "Looking for " << i << ": ";
-	//	cout << index1 << ", " << index2 - node->getPositionOfFirstKey() << " => " << (index1 == (index2 - node->getPositionOfFirstKey())) << endl;
-	//}
-
 	cout << t1->traverse() << endl;
+	cout << t2->traverse() << endl;
+
+	for (int i = 0; i < size; i++)
+	{
+		auto node = t2->search(numbers[i]);
+		int index2 = node->findKey(numbers[i]);
+		int index1 = t1->search(numbers[i])->findKey(numbers[i]);
+
+		// Correct index1
+		index1 = (node->getPositionOfFirstKey() + index1) % node->getCapacity();
+
+		cout << "Looking for " << numbers[i] << ": ";
+		cout << index1 << ", " << index2 - node->getPositionOfFirstKey() << " => " << (index1 == (index2 - node->getPositionOfFirstKey())) << endl;
+	}
+
+	/*cout << t1->traverse() << endl;
 	cout << t2->traverse() << endl;
 
 	std::random_shuffle(numbers, numbers + size);
@@ -77,6 +77,6 @@ int main()
 		cout << t1->traverse() << endl;
 		cout << t2->traverse() << endl;
 		cout << (t1->traverse() == t2->traverse()) << endl;
-	}
+	}*/
 
 }

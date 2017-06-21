@@ -568,7 +568,7 @@ namespace BTreeLib
 		if (cmp(pairs[i % ndCapacity]->getKey(), k)) ++i;
 
 		// თუ i არ არის საზღვრებს იქით და i-ური გასაღები k-ს ტოლია
-		if (pairs[i % ndCapacity]->getKey() == k && i != n + positionOfFirstKey) // keys[i] == k!
+		if (i != n + positionOfFirstKey && pairs[i % ndCapacity]->getKey() == k) // keys[i] == k!
 			return this;
 
 		// If key is not found here and this is a leaf node
