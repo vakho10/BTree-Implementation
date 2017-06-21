@@ -155,26 +155,26 @@ void checkInsertionSearchDeletion()
 		finish = high_resolution_clock::now();
 		cout << "Search RedBlackTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
 
-		// OldBTree (delete)
-		start = high_resolution_clock::now();
-		for (unsigned int j = 0; j < size; j++)
-			oldBTree.remove(integers[j]);
-		finish = high_resolution_clock::now();
-		cout << "Delete OldBTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
+		//// OldBTree (delete)
+		//start = high_resolution_clock::now();
+		//for (unsigned int j = 0; j < size; j++)
+		//	oldBTree.remove(integers[j]);
+		//finish = high_resolution_clock::now();
+		//cout << "Delete OldBTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
 
-		// BTree (delete)
-		start = high_resolution_clock::now();
-		for (unsigned int j = 0; j < size; j++)
-			tmpBTree.remove(integers[j]);
-		finish = high_resolution_clock::now();
-		cout << "Delete BTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
+		//// BTree (delete)
+		//start = high_resolution_clock::now();
+		//for (unsigned int j = 0; j < size; j++)
+		//	tmpBTree.remove(integers[j]);
+		//finish = high_resolution_clock::now();
+		//cout << "Delete BTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
 
-		// RedBlackTree (delete)
-		start = high_resolution_clock::now();
-		for (size_t j = 0; j < size; j++) {
-			tmpRedBlackTree.RB_delete(rbNodes[j]);
-		}
-		finish = high_resolution_clock::now();
-		cout << "Delete RedBlackTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
+		//// RedBlackTree (delete)
+		//start = high_resolution_clock::now();
+		//for (size_t j = 0; j < size; j++) {
+		//	tmpRedBlackTree.RB_delete(rbNodes[j]);
+		//}
+		//finish = high_resolution_clock::now();
+		//cout << "Delete RedBlackTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
 	}
 }
