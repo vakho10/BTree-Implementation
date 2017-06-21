@@ -31,18 +31,23 @@ namespace TestSuite
 		BTree<int>* t2 = new BTree<int>(3);
 
 		BTreeTests()
-		{			
+		{
 			for (int i = 0; i < numberOfElements; i++)
 			{
 				numbers[i] = i - (numberOfElements / 2);
 			}
 			std::random_shuffle(numbers, numbers + numberOfElements); // აურიე რიცხვები უკეთესი ტესტირებისთვის
-			 
+
 			for (int i = 0; i < numberOfElements; i++)
 			{
 				t1->insert(numbers[i]);
-				t2->insert(numbers[i]);				
+				t2->insert(numbers[i]);
 			}
+		}
+
+		TEST_METHOD(TestInsert) 
+		{
+			Assert::AreEqual(t1->traverse(), t2->traverse());
 		}
 
 		TEST_METHOD(TestSearch)
@@ -51,7 +56,7 @@ namespace TestSuite
 			for (int i = 0; i < numberOfElements; i++)
 			{
 				auto node = t2->search(numbers[i]);
-				
+
 				int index1 = (t1->search(numbers[i])->findKey(numbers[i]) + node->getPositionOfFirstKey()) % node->getCapacity();
 				int index2 = node->findKey(numbers[i]) % node->getCapacity();
 

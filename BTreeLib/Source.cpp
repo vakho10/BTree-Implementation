@@ -25,7 +25,7 @@ int main()
 	// Shuffle array with different elements and test insertion
 	std::random_device rd;  //Will be used to obtain a seed for the random number engine
 	std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
-	std::uniform_int_distribution<> dis(40, 40);
+	std::uniform_int_distribution<> dis(60, 60);
 	//int size = 12;
 	int size = dis(gen);
 	int *numbers = new int[size];

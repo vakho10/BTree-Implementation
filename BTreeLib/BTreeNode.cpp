@@ -419,7 +419,7 @@ namespace BTreeLib
 					pairs[(fin + 1 + ndCapacity) % ndCapacity] = pairs[(fin + ndCapacity) % ndCapacity];
 					--fin;
 				}
-				pairs[(i + ndCapacity) % ndCapacity]->setKey(k); // გასაღების ჩასმა
+				pairs[(i + ndCapacity) % ndCapacity] = new NodePair<T, Compare>(k); // გასაღების ჩასმა
 			}
 			else // თუ თავთან უფრო ახლოა, მაშინ ელემენტების ნაწილია მარცხნივ გადმოსაწევი
 			{
@@ -433,7 +433,7 @@ namespace BTreeLib
 					pairs[(st - 1 + ndCapacity) % ndCapacity] = pairs[st % ndCapacity];
 					++st;
 				}
-				pairs[(i + ndCapacity) % ndCapacity]->setKey(k); // გასაღების ჩასმა
+				pairs[(i + ndCapacity) % ndCapacity] = new NodePair<T, Compare>(k); // გასაღების ჩასმა
 			}
 			n = n + 1; // ზომის გაზრდა
 		}
@@ -525,11 +525,8 @@ namespace BTreeLib
 			}
 		}
 
-		// მარცხენა შვილი იქნება z
-		pairs[(i + ndCapacity) % ndCapacity]->setChild(z);
-
-		// Copy the middle key of y to this node
-		pairs[(i + ndCapacity) % ndCapacity]->setKey(y->pairs[(y->positionOfFirstKey - 1 + ndCapacity) % ndCapacity]->getKey());
+		// მარცხენა შვილი იქნება z && Copy the middle key of y to this node
+		pairs[(i + ndCapacity) % ndCapacity] = new NodePair<T, Compare>(y->pairs[(y->positionOfFirstKey - 1 + ndCapacity) % ndCapacity]->getKey(), z);
 
 		// Increment count of keys in this node
 		n = n + 1;

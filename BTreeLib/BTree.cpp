@@ -21,7 +21,7 @@ namespace BTreeLib
 				BTreeNode<T, Compare> *s = new BTreeNode<T, Compare>(t, false);
 
 				// გახადე ძველი ფესვი ახალი ფესვის, s-ის შვილი
-				s->pairs[0]->setChild(root);
+				s->pairs[0] = new NodePair<T, Compare>(root);
 
 				// გაყავი ძველი ფესვი და გადაიტანე 1 გასაღები ახალ ფესვში
 				s->splitChild(0, root);

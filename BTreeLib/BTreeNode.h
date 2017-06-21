@@ -23,6 +23,12 @@ namespace BTreeLib
 			cmp = _cmp;
 		}
 
+		NodePair(BTreeNode<T, Compare>* _child, Compare& _cmp = Compare())
+		{
+			child = _child;
+			cmp = _cmp;
+		}
+
 		NodePair(T _key, BTreeNode<T, Compare>* _child, Compare& _cmp = Compare()) : NodePair(_key, _cmp) 
 		{
 			child = _child;
@@ -30,7 +36,6 @@ namespace BTreeLib
 
 		~NodePair() 
 		{
-			delete key; key = NULL;
 			delete child; child = NULL;
 		}
 
