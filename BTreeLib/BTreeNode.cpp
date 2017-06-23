@@ -19,8 +19,8 @@ namespace BTreeLib
 		positionOfFirstKey = 0;
 
 		// Allocate memory for maximum number of possible keys and child pointers
-		//pairs = (NodePair<T, Compare>**)malloc(sizeof(NodePair<T, Compare>*) * (ndCapacity)); // new T[2 * t - 1];
-		pairs = new NodePair<T, Compare>*[2 * t - 1]; // new T[2 * t - 1];
+		pairs = (NodePair<T, Compare>**)malloc(sizeof(NodePair<T, Compare>*) * (ndCapacity)); // new T[2 * t - 1];
+		//pairs = new NodePair<T, Compare>*[2 * t - 1]; // new T[2 * t - 1];
 
 		// Initialize the number of keys as 0
 		n = 0;
@@ -31,7 +31,8 @@ namespace BTreeLib
 	template<typename T, typename Compare>
 	BTreeNode<T, Compare>::~BTreeNode()
 	{
-		delete pairs; pairs = NULL;
+		free(pairs); 
+		pairs = NULL;
 	}
 
 	// A utility function that returns the index of the first key that is

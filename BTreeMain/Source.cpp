@@ -31,7 +31,7 @@ using namespace OldTree;
 // Globals:
 time_point<high_resolution_clock> start, finish; // (C++11 Style) Chrono start and end time points.
 int* integers;
-int bestT = 64; // Has been checked previously
+int bestT = 64; // Has been determined previously
 Node<int>** rbNodes;
 
 // Prototypes:
@@ -139,7 +139,7 @@ void checkInsertionSearchDeletion()
 		for (size_t j = 0; j < size; j++)
 			oldBTree.search(integers[j])->findKey(integers[j]);
 		finish = high_resolution_clock::now();
-		cout << "Search BTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
+		cout << "Search OldBTree " << size << ", Milliseconds: " << duration_cast<milliseconds>(finish - start).count() << endl;
 
 		// BTree (search)
 		start = high_resolution_clock::now();
